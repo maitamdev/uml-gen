@@ -78,6 +78,45 @@
                 <button class="btn-eye" id="toggleKeyBtn" title="Hiện/ẩn">👁️</button>
               </div>
               <button class="btn btn-primary btn-save-key" id="saveKeyBtn">Lưu & Kiểm tra</button>
+
+              <!-- Guide Toggle -->
+              <div class="guide-section">
+                <button class="guide-toggle" id="guideToggle">
+                  <span>📖 Hướng dẫn lấy API Key</span>
+                  <span class="guide-chevron" id="guideChevron">▼</span>
+                </button>
+                <div class="guide-content" id="guideContent">
+                  <div class="guide-step">
+                    <div class="guide-step-num">1</div>
+                    <div class="guide-step-body">
+                      <div class="guide-step-title">Tạo tài khoản Hugging Face</div>
+                      <p>Truy cập <a href="https://huggingface.co/join" target="_blank">huggingface.co/join</a> → Đăng ký bằng <strong>Google</strong> hoặc <strong>GitHub</strong> cho nhanh.</p>
+                    </div>
+                  </div>
+                  <div class="guide-step">
+                    <div class="guide-step-num">2</div>
+                    <div class="guide-step-body">
+                      <div class="guide-step-title">Tạo Access Token</div>
+                      <p>Vào <a href="https://huggingface.co/settings/tokens" target="_blank">Settings → Tokens</a> → Bấm <strong>"Create new token"</strong></p>
+                      <ul>
+                        <li>Token name: <code>uml-generator</code></li>
+                        <li>Token type: chọn <strong>"Read"</strong> (đủ dùng)</li>
+                      </ul>
+                      <p>Bấm <strong>"Create token"</strong> → Copy token (bắt đầu bằng <code>hf_...</code>)</p>
+                    </div>
+                  </div>
+                  <div class="guide-step">
+                    <div class="guide-step-num">3</div>
+                    <div class="guide-step-body">
+                      <div class="guide-step-title">Dán vào ô trên & Lưu</div>
+                      <p>Dán token <code>hf_...</code> vào ô API Key ở trên → Bấm <strong>"Lưu & Kiểm tra"</strong>. Khi thấy chấm 🟢 xanh là xong!</p>
+                    </div>
+                  </div>
+                  <div class="guide-note">
+                    💡 <strong>Miễn phí:</strong> 300 requests/giờ — đủ dùng thoải mái!
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
