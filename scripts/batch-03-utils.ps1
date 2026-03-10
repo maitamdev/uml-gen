@@ -1,48 +1,16 @@
 $ErrorActionPreference = "Stop"
 Set-Location "c:\Users\Asus\.gemini\antigravity\scratch\uml-generator"
 
-# ---- Commit 21: string.utils.ts ----
-New-Item -ItemType Directory -Force -Path "src/utils" | Out-Null
-@"
-// String utility functions
-export function truncate(str: string, maxLength: number, suffix = '...'): string {
-  if (str.length <= maxLength) return str;
-  return str.slice(0, maxLength - suffix.length) + suffix;
-}
-
-export function sanitizeHtml(str: string): string {
-  const map: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-  return str.replace(/[&<>"']/g, (m) => map[m] || m);
-}
-
-export function slugify(str: string): string {
-  return str.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
-}
-
-export function capitalize(str: string): string {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-export function countWords(str: string): number {
-  return str.trim().split(/\s+/).filter(Boolean).length;
-}
-
-export function removeExtraSpaces(str: string): string {
-  return str.replace(/\s+/g, ' ').trim();
-}
-"@ | Set-Content -Path "src/utils/string.utils.ts" -Encoding UTF8
-git add -A; git commit -m "feat(utils): add string helper functions - truncate, sanitize, slugify"
-
 # ---- Commit 22: dom.utils.ts ----
-@"
+$domContent = @'
 // DOM utility functions
-export function $(selector: string): HTMLElement {
+export function qs(selector: string): HTMLElement {
   const el = document.querySelector<HTMLElement>(selector);
   if (!el) throw new Error('Element not found: ' + selector);
   return el;
 }
 
-export function $$(selector: string): HTMLElement[] {
+export function qsa(selector: string): HTMLElement[] {
   return Array.from(document.querySelectorAll<HTMLElement>(selector));
 }
 
@@ -64,11 +32,12 @@ export function toggleClass(el: HTMLElement, className: string, force?: boolean)
 export function isVisible(el: HTMLElement): boolean {
   return !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
 }
-"@ | Set-Content -Path "src/utils/dom.utils.ts" -Encoding UTF8
+'@
+Set-Content -Path "src/utils/dom.utils.ts" -Value $domContent -Encoding UTF8
 git add -A; git commit -m "feat(utils): add DOM query and manipulation helpers"
 
 # ---- Commit 23: clipboard.utils.ts ----
-@"
+$clipContent = @'
 // Clipboard utility functions
 export async function copyText(text: string): Promise<boolean> {
   try {
@@ -97,11 +66,12 @@ export async function readClipboard(): Promise<string | null> {
     return null;
   }
 }
-"@ | Set-Content -Path "src/utils/clipboard.utils.ts" -Encoding UTF8
+'@
+Set-Content -Path "src/utils/clipboard.utils.ts" -Value $clipContent -Encoding UTF8
 git add -A; git commit -m "feat(utils): add clipboard read/write with fallback support"
 
 # ---- Commit 24: storage.utils.ts ----
-@"
+$storageContent = @'
 // LocalStorage wrapper with JSON support and expiry
 const PREFIX = 'uml-gen-';
 
@@ -134,11 +104,12 @@ export function clearAll(): void {
     .filter(k => k.startsWith(PREFIX))
     .forEach(k => localStorage.removeItem(k));
 }
-"@ | Set-Content -Path "src/utils/storage.utils.ts" -Encoding UTF8
+'@
+Set-Content -Path "src/utils/storage.utils.ts" -Value $storageContent -Encoding UTF8
 git add -A; git commit -m "feat(utils): add localStorage wrapper with JSON and TTL support"
 
 # ---- Commit 25: validation.utils.ts ----
-@"
+$validContent = @'
 // Input validation utilities
 export function isNonEmpty(value: string): boolean {
   return value.trim().length > 0;
@@ -165,11 +136,12 @@ export function isWithinRange(value: number, min: number, max: number): boolean 
 export function sanitizeInput(input: string): string {
   return input.replace(/<[^>]*>/g, '').trim();
 }
-"@ | Set-Content -Path "src/utils/validation.utils.ts" -Encoding UTF8
+'@
+Set-Content -Path "src/utils/validation.utils.ts" -Value $validContent -Encoding UTF8
 git add -A; git commit -m "feat(utils): add input validation and sanitization functions"
 
 # ---- Commit 26: date.utils.ts ----
-@"
+$dateContent = @'
 // Date formatting utilities
 export function formatTimestamp(ts: number): string {
   return new Date(ts).toLocaleString('vi-VN', {
@@ -181,29 +153,30 @@ export function formatTimestamp(ts: number): string {
 export function timeAgo(ts: number): string {
   const diff = Date.now() - ts;
   const seconds = Math.floor(diff / 1000);
-  if (seconds < 60) return 'vừa xong';
+  if (seconds < 60) return 'vua xong';
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return minutes + ' phút trước';
+  if (minutes < 60) return minutes + ' phut truoc';
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return hours + ' giờ trước';
+  if (hours < 24) return hours + ' gio truoc';
   const days = Math.floor(hours / 24);
-  return days + ' ngày trước';
+  return days + ' ngay truoc';
 }
 
 export function formatDuration(ms: number): string {
   if (ms < 1000) return ms + 'ms';
   return (ms / 1000).toFixed(1) + 's';
 }
-"@ | Set-Content -Path "src/utils/date.utils.ts" -Encoding UTF8
+'@
+Set-Content -Path "src/utils/date.utils.ts" -Value $dateContent -Encoding UTF8
 git add -A; git commit -m "feat(utils): add date formatting and time-ago helpers"
 
 # ---- Commit 27: error.utils.ts ----
-@"
+$errorContent = @'
 // Error handling utilities
 export function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   if (typeof error === 'string') return error;
-  return 'Đã xảy ra lỗi không xác định';
+  return 'An unknown error occurred';
 }
 
 export function isNetworkError(error: unknown): boolean {
@@ -221,17 +194,18 @@ export function createAppError(message: string, code: string, recoverable = true
 }
 
 export function formatApiError(status: number, provider: string): string {
-  if (status === 401) return 'API Key không hợp lệ cho ' + provider;
-  if (status === 429) return 'Đã vượt giới hạn request cho ' + provider;
-  if (status === 402) return 'Hết quota miễn phí cho ' + provider;
-  if (status >= 500) return 'Server ' + provider + ' đang gặp sự cố';
-  return 'Lỗi không xác định (' + status + ')';
+  if (status === 401) return 'API Key invalid for ' + provider;
+  if (status === 429) return 'Rate limit exceeded for ' + provider;
+  if (status === 402) return 'Free quota exhausted for ' + provider;
+  if (status >= 500) return 'Server error from ' + provider;
+  return 'Unknown error (' + status + ')';
 }
-"@ | Set-Content -Path "src/utils/error.utils.ts" -Encoding UTF8
+'@
+Set-Content -Path "src/utils/error.utils.ts" -Value $errorContent -Encoding UTF8
 git add -A; git commit -m "feat(utils): add error handling and message formatting helpers"
 
 # ---- Commit 28: download.utils.ts ----
-@"
+$dlContent = @'
 // File download utilities
 export function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
@@ -258,11 +232,12 @@ export function generateFilename(prefix: string, extension: string): string {
   const time = new Date().toISOString().slice(11, 19).replace(/:/g, '-');
   return prefix + '-' + date + '-' + time + '.' + extension;
 }
-"@ | Set-Content -Path "src/utils/download.utils.ts" -Encoding UTF8
+'@
+Set-Content -Path "src/utils/download.utils.ts" -Value $dlContent -Encoding UTF8
 git add -A; git commit -m "feat(utils): add file download and blob generation helpers"
 
 # ---- Commit 29: debounce.utils.ts ----
-@"
+$debounceContent = @'
 // Debounce and throttle utilities
 export function debounce<T extends (...args: unknown[]) => void>(
   fn: T,
@@ -301,11 +276,12 @@ export function rafThrottle<T extends (...args: unknown[]) => void>(fn: T): T {
     });
   }) as T;
 }
-"@ | Set-Content -Path "src/utils/debounce.utils.ts" -Encoding UTF8
+'@
+Set-Content -Path "src/utils/debounce.utils.ts" -Value $debounceContent -Encoding UTF8
 git add -A; git commit -m "feat(utils): add debounce, throttle, and RAF throttle functions"
 
 # ---- Commit 30: utils/index.ts ----
-@"
+$indexContent = @'
 // Barrel exports for all utility modules
 export * from './string.utils';
 export * from './dom.utils';
@@ -316,7 +292,8 @@ export * from './date.utils';
 export * from './error.utils';
 export * from './download.utils';
 export * from './debounce.utils';
-"@ | Set-Content -Path "src/utils/index.ts" -Encoding UTF8
+'@
+Set-Content -Path "src/utils/index.ts" -Value $indexContent -Encoding UTF8
 git add -A; git commit -m "feat(utils): add barrel exports for all utility modules"
 
-Write-Host "Batch 3 done: 10 commits (Utils)" -ForegroundColor Green
+Write-Host "Batch 3 done: 9 commits (Utils 22-30)" -ForegroundColor Green
