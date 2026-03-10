@@ -1,0 +1,60 @@
+/* ============================================
+   UML Diagram Generator - Premium Dark Theme V2
+   Rich gradients, glow effects, depth, animations
+   ============================================ */
+
+/* ---- Design Tokens ---- */
+:root {
+  --bg-base: #05050f;
+  --bg-surface: #0a0a1a;
+  --bg-elevated: #0f0f25;
+  --bg-card: rgba(12, 12, 30, 0.65);
+
+  --border-subtle: rgba(99, 102, 241, 0.1);
+  --border-default: rgba(99, 102, 241, 0.18);
+  --border-hover: rgba(139, 92, 246, 0.35);
+  --border-active: rgba(99, 102, 241, 0.5);
+
+  --text-primary: #f0f0f8;
+  --text-secondary: #a8a8cc;
+  --text-muted: #5c5c80;
+  --text-inverse: #05050f;
+
+  --indigo: #6366f1;
+  --violet: #8b5cf6;
+  --purple: #a78bfa;
+  --pink: #ec4899;
+  --cyan: #22d3ee;
+  --emerald: #10b981;
+  --amber: #f59e0b;
+  --rose: #f43f5e;
+
+  --gradient-brand: linear-gradient(135deg, #6366f1 0%, #8b5cf6 35%, #c084fc 70%, #ec4899 100%);
+  --gradient-brand-subtle: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(139,92,246,0.1), rgba(236,72,153,0.08));
+  --gradient-btn: linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #8b5cf6 100%);
+  --gradient-btn-hover: linear-gradient(135deg, #7c7cff 0%, #9061ff 50%, #a78bfa 100%);
+  --gradient-surface: linear-gradient(180deg, rgba(99,102,241,0.04) 0%, transparent 100%);
+
+  --glow-sm: 0 0 15px rgba(99, 102, 241, 0.15);
+  --glow-md: 0 0 30px rgba(99, 102, 241, 0.2);
+  --glow-lg: 0 4px 40px rgba(99, 102, 241, 0.25);
+  --glow-brand: 0 0 60px rgba(99, 102, 241, 0.15), 0 0 120px rgba(139, 92, 246, 0.08);
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  --shadow-xl: 0 20px 60px rgba(0,0,0,0.6);
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+
+  --header-h: 56px;
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
