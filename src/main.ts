@@ -413,3 +413,58 @@ function switchTab(type: keyof DiagramSet) {
     `;
   }
 
+  // Update analysis
+  const analysis = currentAnalyses[type];
+  if (analysis) {
+    renderAnalysis(analysis);
+  } else {
+    // Try to generate on-the-fly if we have requirement text and Groq is available
+    const requirement = requirementInput.value.trim();
+    if (requirement && groqAvailable) {
+      generateAnalysisForTab(type, requirement);
+    } else {
+      analysisContent.innerHTML = `
+        <div class="analysis-placeholder">
+          <div class="placeholder-icon">📄</div>
+          <div>Bài phân tích sẽ hiển thị ở đây</div>
+        </div>
+      `;
+    }
+  }
+}
+
+function updateTabStatus(type: string, status: 'generating' | 'done') {
+  const tab = document.querySelector(`.tab[data-type="${type}"]`) as HTMLElement;
+  if (!tab) return;
+  tab.style.opacity = status === 'generating' ? '0.6' : '1';
+}
+
+// ---- UI Helpers ----
+function showOutput() {
+  outputSection.style.display = 'flex';
+  outputSection.style.flexDirection = 'column';
+  outputSection.style.gap = '1rem';
+
+  const featuresSection = document.getElementById('featuresSection');
+  if (featuresSection) featuresSection.style.display = 'none';
+
+  setTimeout(() => {
+    outputSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function setLoading(loading: boolean) {
+  generateBtn.classList.toggle('loading', loading);
+  (generateBtn as HTMLButtonElement).disabled = loading;
+}
+
+function adjustZoom(delta: number) {
+  zoomLevel = Math.max(0.3, Math.min(3, zoomLevel + delta));
+  diagramContainer.style.transform = `scale(${zoomLevel})`;
+}
+
+function toggleCodePanel() {
+  const content = $('#codeContent');
+  const icon = $('#toggleCodeIcon');
+  const isHidden = content.style.display === 'none';
+  content.style.display = isHidden ? 'block' : 'none';
