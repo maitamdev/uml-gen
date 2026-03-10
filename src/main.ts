@@ -98,3 +98,58 @@ function setupApiKeyUI() {
     });
   }
 
+  // Toggle settings panel
+  settingsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    settingsPanel.classList.toggle('open');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!settingsPanel.contains(e.target as Node) && !settingsBtn.contains(e.target as Node)) {
+      settingsPanel.classList.remove('open');
+    }
+  });
+
+  // Save key
+  saveKeyBtn.addEventListener('click', async () => {
+    const key = apiKeyInput.value.trim();
+    if (!key) {
+      showToast('⚠️ Vui lòng nhập API Key', 'error');
+      return;
+    }
+    setApiKey(key);
+    showToast('🔑 Đang kiểm tra API Key...', 'info');
+    await checkAIStatus();
+    settingsPanel.classList.remove('open');
+  });
+
+  // Toggle visibility
+  if (toggleKeyBtn) {
+    toggleKeyBtn.addEventListener('click', () => {
+      const isPassword = apiKeyInput.type === 'password';
+      apiKeyInput.type = isPassword ? 'text' : 'password';
+      toggleKeyBtn.textContent = isPassword ? '🙈' : '👁️';
+    });
+  }
+
+  // Enter key
+  apiKeyInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveKeyBtn.click();
+  });
+}
+
+function updateInputPlaceholder(input: HTMLInputElement) {
+  const config = getProviderConfig();
+  input.placeholder = config.keyPlaceholder;
+}
+
+// ---- AI Status Check ----
+async function checkAIStatus() {
+  const statusDot = aiStatus.querySelector('.status-dot') as HTMLElement;
+  const statusText = aiStatus.querySelector('.status-text') as HTMLElement;
+  const config = getProviderConfig();
+
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    statusDot.className = 'status-dot offline';
+    statusText.textContent = 'Chưa cấu hình API Key — Nhấn ⚙️';
