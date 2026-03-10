@@ -360,6 +360,11 @@ function cleanMermaidCode(raw: string): string {
     code = match[1].trim();
   }
   
+  // ---- AUTO-FIX: Convert PlantUML useCaseDiagram to Mermaid flowchart ----
+  if (code.includes('useCaseDiagram') || code.includes('useCase ') || (code.includes('actor ') && !code.includes('sequenceDiagram'))) {
+    code = convertUseCaseToFlowchart(code);
+  }
+  
   // Remove leading text before diagram keyword
   const diagramKeywords = ['flowchart', 'sequenceDiagram', 'classDiagram'];
   for (const keyword of diagramKeywords) {
@@ -371,6 +376,78 @@ function cleanMermaidCode(raw: string): string {
   }
   
   return code;
+}
+
+// Convert PlantUML-style useCaseDiagram to Mermaid flowchart LR
+function convertUseCaseToFlowchart(raw: string): string {
+  const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+  
+  const actors: { id: string; name: string }[] = [];
+  const usecases: { id: string; name: string }[] = [];
+  const connections: string[] = [];
+  
+  for (const line of lines) {
+    // Skip diagram type declaration
+    if (line.startsWith('useCaseDiagram') || line === '') continue;
+    
+    // Parse: actor Name as ID  OR  actor Name_With_Underscores as ID
+    const actorMatch = line.match(/^actor\s+(.+?)\s+as\s+(\w+)/);
+    if (actorMatch) {
+      const name = actorMatch[1].replace(/_/g, ' ');
+      actors.push({ id: actorMatch[2], name });
+      continue;
+    }
+    
+    // Parse: useCase Name as ID  OR  useCase "Name" as ID
+    const ucMatch = line.match(/^useCase\s+(.+?)\s+as\s+(\w+)/);
+    if (ucMatch) {
+      const name = ucMatch[1].replace(/_/g, ' ').replace(/"/g, '');
+      usecases.push({ id: ucMatch[2], name });
+      continue;
+    }
+    
+    // Parse connections: ID --> ID  or  ID --> ID : label
+    const connMatch = line.match(/^(\w+)\s*-->\s*(\w+)(?:\s*:\s*(.+))?/);
+    if (connMatch) {
+      const from = connMatch[1];
+      const to = connMatch[2];
+      const label = connMatch[3];
+      // Check if "to" looks like an inline use case definition (e.g., UC12 as Name)
+      const inlineUC = line.match(/^(\w+)\s*-->\s*(\w+)\s+as\s+(.+)/);
+      if (inlineUC) {
+        const ucName = inlineUC[3].replace(/_/g, ' ');
+        usecases.push({ id: inlineUC[2], name: ucName });
+        connections.push(`  ${from} --> ${inlineUC[2]}`);
+      } else if (label) {
+        connections.push(`  ${from} -->|"${label.trim()}"| ${to}`);
+      } else {
+        connections.push(`  ${from} --> ${to}`);
+      }
+      continue;
+    }
+  }
+  
+  // Build valid Mermaid flowchart LR
+  const output: string[] = ['flowchart LR'];
+  
+  // Add actors
+  for (const a of actors) {
+    output.push(`  ${a.id}["👤 ${a.name}"]`);
+  }
+  
+  // Add use cases in subgraph
+  if (usecases.length > 0) {
+    output.push(`  subgraph SYS["🏢 Hệ thống"]`);
+    for (const uc of usecases) {
+      output.push(`    ${uc.id}["📝 ${uc.name}"]`);
+    }
+    output.push('  end');
+  }
+  
+  // Add connections
+  output.push(...connections);
+  
+  return output.join('\n');
 }
 
 // ---- Generate Diagram via Groq ----
