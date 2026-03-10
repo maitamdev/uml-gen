@@ -183,3 +183,48 @@
               id="requirementInput"
               class="requirement-textarea"
               placeholder="Ví dụ: Hệ thống quản lý thư viện cho phép sinh viên mượn/trả sách, thủ thư quản lý sách và thẻ thư viện, quản trị viên quản lý tài khoản và thống kê..."
+              rows="4"
+            ></textarea>
+            <div class="textarea-hint">
+              <span>💡 Nhấn <kbd>Ctrl</kbd> + <kbd>Enter</kbd> để generate nhanh</span>
+            </div>
+          </div>
+          <div class="input-actions">
+            <div class="ai-status" id="aiStatus">
+              <span class="status-dot"></span>
+              <span class="status-text">Đang kiểm tra Ollama...</span>
+            </div>
+            <button class="btn btn-primary btn-generate" id="generateBtn">
+              <div class="btn-shine"></div>
+              <span class="btn-icon">⚡</span>
+              <span class="btn-text">Generate Diagrams</span>
+              <div class="btn-loader" id="btnLoader"></div>
+            </button>
+          </div>
+        </section>
+
+        <!-- Feature Cards -->
+        <section class="features-section" id="featuresSection">
+          <div class="features-grid">
+            <div class="feature-card" data-type="usecase">
+              <div class="card-bg-accent" style="--accent-hue: 240"></div>
+              <div class="feature-icon-wrap"><span class="feature-icon">👥</span></div>
+              <div class="feature-name">Use Case</div>
+              <div class="feature-desc">Sơ đồ tác nhân & chức năng hệ thống</div>
+            </div>
+            <div class="feature-card" data-type="activity">
+              <div class="card-bg-accent" style="--accent-hue: 270"></div>
+              <div class="feature-icon-wrap"><span class="feature-icon">🔄</span></div>
+              <div class="feature-name">Activity</div>
+              <div class="feature-desc">Luồng hoạt động & quy trình xử lý</div>
+            </div>
+            <div class="feature-card" data-type="sequence">
+              <div class="card-bg-accent" style="--accent-hue: 200"></div>
+              <div class="feature-icon-wrap"><span class="feature-icon">📨</span></div>
+              <div class="feature-name">Sequence</div>
+              <div class="feature-desc">Tương tác giữa các đối tượng</div>
+            </div>
+            <div class="feature-card" data-type="class">
+              <div class="card-bg-accent" style="--accent-hue: 330"></div>
+              <div class="feature-icon-wrap"><span class="feature-icon">🏗️</span></div>
+              <div class="feature-name">Class</div>
