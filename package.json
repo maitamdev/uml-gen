@@ -1,7 +1,7 @@
 ﻿{
   "name": "uml-generator",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -17,4 +17,5 @@
     "mermaid": "^11.13.0"
   }
 }
+
 
