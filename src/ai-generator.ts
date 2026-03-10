@@ -278,3 +278,63 @@ QUY TẮC BỐ CỤC (RẤT QUAN TRỌNG - tuân thủ nghiêm ngặt):
    UC1["📝 Tên chức năng"]
 5. Nối: A1 --> UC1
 6. GIỚI HẠN: Tối đa 8-10 use case chính, 3-5 actor. KHÔNG liệt kê quá nhiều.
+7. Nếu 1 actor có nhiều use case, nhóm các use case liên quan lại gần nhau trong subgraph.
+8. KHÔNG dùng subgraph lồng nhau.
+9. Cuối cùng đóng subgraph: end`,
+
+  activity: `Tạo Activity Diagram bằng Mermaid flowchart TD cho LUỒNG XỬ LÝ CHÍNH của hệ thống.
+
+QUY TẮC:
+1. Dùng flowchart TD
+2. Node bắt đầu: S(("🟢 Bắt đầu"))
+3. Node kết thúc: E(("🔴 Kết thúc"))
+4. Bước xử lý: B1["📝 Mô tả bước"]
+5. Điều kiện: C1{"❓ Điều kiện?"}
+6. Nối tuần tự: S --> B1 --> B2 --> C1
+7. Rẽ nhánh từ điều kiện: C1 -->|Có| B3 và C1 -->|Không| B4
+8. GIỚI HẠN: Tối đa 10-12 node, 1-2 điều kiện rẽ nhánh.
+9. Chọn 1 quy trình nghiệp vụ CHÍNH (ví dụ: quy trình khám bệnh, quy trình đặt hàng...) — KHÔNG vẽ toàn bộ hệ thống.
+10. Luồng phải có hướng đi rõ ràng từ trên xuống dưới, KHÔNG quay ngược lên.`,
+
+  sequence: `Tạo Sequence Diagram bằng Mermaid sequenceDiagram cho 1 tình huống sử dụng CHÍNH.
+
+QUY TẮC:
+1. Dùng sequenceDiagram
+2. Khai báo actor/participant:
+   actor BN as 👤 Bệnh nhân
+   participant HT as 🖥️ Hệ thống
+   participant DB as 🗄️ CSDL
+3. Message request: BN->>HT: Nội dung
+4. Message response: HT-->>BN: Kết quả
+5. Dùng activate/deactivate cho participant đang xử lý
+6. Dùng Note over để ghi chú quan trọng
+7. Dùng alt/else cho điều kiện (tối đa 1-2 block)
+8. GIỚI HẠN: Tối đa 4-5 participant, 10-15 message.
+9. Chọn 1 kịch bản cụ thể (ví dụ: "Đặt lịch khám", "Thanh toán") — KHÔNG vẽ toàn bộ.`,
+
+  class: `Tạo Class Diagram bằng Mermaid classDiagram.
+
+QUY TẮC:
+1. Dùng classDiagram
+2. Mỗi class có 2-4 thuộc tính chính và 1-3 phương thức chính:
+   class TenLop {
+     -int id
+     -String ten
+     +getTen() String
+     +capNhat() void
+   }
+3. Quan hệ:
+   LopCha <|-- LopCon : kế thừa
+   LopA "1" --> "*" LopB : chứa
+   LopA o-- LopB : tập hợp
+4. GIỚI HẠN: Tối đa 6-8 class chính.
+5. Đặt tên class bằng tiếng Việt KHÔNG DẤU hoặc tiếng Anh ngắn gọn (ví dụ: BenhNhan, BacSi, HoaDon).
+6. KHÔNG dùng ký tự đặc biệt hay khoảng trắng trong tên class.`,
+
+  erd: `Tạo ERD bằng Mermaid erDiagram.
+
+QUY TẮC:
+1. Dùng erDiagram
+2. Mỗi entity có 3-5 thuộc tính chính:
+   BENH_NHAN {
+     int ma_bn PK
