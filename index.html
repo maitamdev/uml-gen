@@ -283,3 +283,58 @@
                   <span class="tab-icon">🔄</span>
                   <span class="tab-label">Activity</span>
                 </button>
+                <button class="tab" data-type="sequence">
+                  <span class="tab-icon">📨</span>
+                  <span class="tab-label">Sequence</span>
+                </button>
+                <button class="tab" data-type="class">
+                  <span class="tab-icon">🏗️</span>
+                  <span class="tab-label">Class</span>
+                </button>
+                <button class="tab" data-type="erd">
+                  <span class="tab-icon">🗄️</span>
+                  <span class="tab-label">ERD</span>
+                </button>
+                <button class="tab" data-type="state">
+                  <span class="tab-icon">🔀</span>
+                  <span class="tab-label">State</span>
+                </button>
+                <button class="tab" data-type="component">
+                  <span class="tab-icon">🧩</span>
+                  <span class="tab-label">Component</span>
+                </button>
+                <button class="tab" data-type="deployment">
+                  <span class="tab-icon">☁️</span>
+                  <span class="tab-label">Deploy</span>
+                </button>
+                <button class="tab" data-type="dfd">
+                  <span class="tab-icon">🔄</span>
+                  <span class="tab-label">DFD</span>
+                </button>
+                <button class="tab" data-type="gantt">
+                  <span class="tab-icon">📅</span>
+                  <span class="tab-label">Gantt</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Split Layout: Analysis + Diagram -->
+          <div class="output-split-layout">
+            <!-- Analysis Panel (Left) -->
+            <div class="analysis-panel" id="analysisPanel">
+              <div class="analysis-toolbar">
+                <h3 class="analysis-title">
+                  <span class="analysis-icon">📝</span>
+                  <span id="analysisTitle">Phân tích</span>
+                </h3>
+                <div class="analysis-actions">
+                  <button class="btn btn-export btn-copy-analysis" id="copyAnalysisBtn" title="Copy nội dung phân tích">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
+                    Copy
+                  </button>
+                </div>
+              </div>
+              <div class="analysis-content" id="analysisContent">
