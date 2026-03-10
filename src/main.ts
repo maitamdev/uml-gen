@@ -153,3 +153,58 @@ async function checkAIStatus() {
   if (!apiKey) {
     statusDot.className = 'status-dot offline';
     statusText.textContent = 'Chưa cấu hình API Key — Nhấn ⚙️';
+    groqAvailable = false;
+    return;
+  }
+
+  statusDot.className = 'status-dot';
+  statusText.textContent = `Đang kiểm tra ${config.name}...`;
+
+  groqAvailable = await checkProviderStatus();
+
+  if (groqAvailable) {
+    statusDot.className = 'status-dot online';
+    statusText.textContent = `${config.name} sẵn sàng ⚡`;
+    showToast(`✅ ${config.name} API Key hợp lệ!`, 'success');
+  } else {
+    statusDot.className = 'status-dot offline';
+    statusText.textContent = 'API Key không hợp lệ — Nhấn ⚙️';
+    showToast('❌ API Key không hợp lệ. Kiểm tra lại.', 'error');
+  }
+}
+
+// ---- Scroll Animations ----
+function setupScrollAnimations() {
+  const featureCards = document.querySelectorAll('.feature-card');
+  const featureObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    },
+    { threshold: 0.15, rootMargin: '0px 0px -20px 0px' }
+  );
+  featureCards.forEach((card) => featureObserver.observe(card));
+
+  const revealElements = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    },
+    { threshold: 0.1 }
+  );
+  revealElements.forEach((el) => revealObserver.observe(el));
+}
+
+// ---- Event Listeners ----
+function setupEventListeners() {
+  generateBtn.addEventListener('click', handleGenerate);
+
+  templateBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    templateMenu.classList.toggle('open');
+  });
+
+  document.addEventListener('click', () => {
