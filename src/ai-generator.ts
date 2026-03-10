@@ -498,3 +498,43 @@ export async function generateDiagram(
       ],
       temperature: 0.3,
       max_tokens: 4096,
+    }),
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    const errMsg = (errData as any)?.error?.message || response.statusText;
+    throw new Error(`${config.name} API error: ${errMsg}`);
+  }
+
+  const data = await response.json();
+  const content = (data as any).choices?.[0]?.message?.content || '';
+  return cleanMermaidCode(content);
+}
+
+// ---- Generate Analysis Text via AI ----
+export async function generateAnalysis(
+  requirement: string,
+  diagramType: string
+): Promise<string> {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error('Chưa cấu hình API Key. Vui lòng nhập API Key.');
+  }
+
+  const config = getProviderConfig();
+
+  const analysisPrompt = ANALYSIS_PROMPTS[diagramType];
+  if (!analysisPrompt) {
+    return ''; // No analysis available for this type
+  }
+
+  const response = await fetch(config.apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: config.model,
+      messages: [
