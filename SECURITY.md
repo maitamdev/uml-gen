@@ -1,10 +1,20 @@
-# Security Policy
+﻿# Security Policy
+
+## Supported Versions
+| Version | Supported |
+|---------|-----------|
+| 1.1.x   | Yes       |
+| 1.0.x   | Yes       |
+| < 1.0   | No        |
 
 ## Reporting a Vulnerability
+If you discover a security vulnerability, please report it by emailing security@maitamdev.com.
 
-nếu bạn phát hiện lỗi bảo mật hãy liên hệ đến maitamit062005@gmail.com  
+Do NOT create a public GitHub issue for security vulnerabilities.
 
-## API Keys
-
-API keys duoc luu trong localStorage cua trinh duyet nguoi dung.
-Khong co du lieu nao duoc gui den server cua chung toi.
+## Security Measures
+- API keys stored client-side only in localStorage
+- Content Security Policy headers enforced
+- XSS protection via HTML sanitization
+- Rate limiting on API calls
+- No server-side code or data storage
