@@ -548,3 +548,113 @@ export const templates: Record<string, Template> = {
   NV --> UC10
   
   QTV --> UC9
+  QTV --> UC6
+  QTV --> UC8
+  
+  UC3 --> TT`,
+
+      activity: `flowchart TD
+  Start(("🟢 Bắt đầu"))
+  Browse["🔍 Duyệt sản phẩm"]
+  AddCart["🛒 Thêm vào giỏ"]
+  ViewCart["📋 Xem giỏ hàng"]
+  Checkout{"💳 Thanh toán?"}
+  Login["🔐 Đăng nhập"]
+  EnterAddress["📍 Nhập địa chỉ"]
+  SelectPayment["💰 Chọn phương thức"]
+  ProcessPayment{"✅ TT thành công?"}
+  CreateOrder["📦 Tạo đơn hàng"]
+  SendConfirm["📧 Gửi xác nhận"]
+  PayFailed["❌ Thanh toán thất bại"]
+  End(("🔴 Kết thúc"))
+  
+  Start --> Browse
+  Browse --> AddCart
+  AddCart --> ViewCart
+  ViewCart --> Checkout
+  Checkout -->|Mua| Login
+  Checkout -->|Tiếp tục mua| Browse
+  Login --> EnterAddress
+  EnterAddress --> SelectPayment
+  SelectPayment --> ProcessPayment
+  ProcessPayment -->|Thành công| CreateOrder
+  ProcessPayment -->|Thất bại| PayFailed
+  PayFailed --> SelectPayment
+  CreateOrder --> SendConfirm
+  SendConfirm --> End`,
+
+      sequence: `sequenceDiagram
+  actor KH as 🧑 Khách hàng
+  participant Web as 🌐 Website
+  participant Server as ⚙️ Server
+  participant DB as 🗄️ CSDL
+  participant Pay as 🏦 Thanh toán
+  
+  KH->>Web: Tìm kiếm sản phẩm
+  Web->>Server: GET /products?q=...
+  Server->>DB: Query sản phẩm
+  DB-->>Server: Kết quả
+  Server-->>Web: Danh sách SP
+  Web-->>KH: Hiển thị SP
+  
+  KH->>Web: Thêm vào giỏ hàng
+  Web->>Server: POST /cart
+  Server->>DB: Lưu giỏ hàng
+  DB-->>Server: OK
+  Server-->>Web: Cập nhật giỏ
+  
+  KH->>Web: Tiến hành thanh toán
+  Web->>Server: POST /orders
+  Server->>DB: Tạo đơn hàng
+  Server->>Pay: Yêu cầu thanh toán
+  Pay-->>Server: Xác nhận TT
+  Server->>DB: Cập nhật trạng thái
+  Server-->>Web: Đơn hàng thành công
+  Web-->>KH: Hiển thị xác nhận`,
+
+      class: `classDiagram
+  class KhachHang {
+    -maKH: String
+    -hoTen: String
+    -email: String
+    -matKhau: String
+    -diaChi: String
+    +dangKy()
+    +dangNhap()
+    +datHang()
+    +xemDonHang()
+  }
+  
+  class SanPham {
+    -maSP: String
+    -tenSP: String
+    -gia: double
+    -moTa: String
+    -hinhAnh: String
+    -soLuongTon: int
+    +capNhatGia()
+    +kiemTraTon()
+  }
+  
+  class DonHang {
+    -maDH: String
+    -ngayDat: Date
+    -tongTien: double
+    -trangThai: String
+    -diaChiGiao: String
+    +tinhTongTien()
+    +capNhatTrangThai()
+  }
+  
+  class ChiTietDH {
+    -soLuong: int
+    -donGia: double
+    -thanhTien: double
+    +tinhThanhTien()
+  }
+  
+  class GioHang {
+    -maGH: String
+    +themSP()
+    +xoaSP()
+    +tinhTong()
