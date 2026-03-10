@@ -658,3 +658,123 @@ export const templates: Record<string, Template> = {
     +themSP()
     +xoaSP()
     +tinhTong()
+  }
+  
+  class ThanhToan {
+    -maTT: String
+    -phuongThuc: String
+    -soTien: double
+    -trangThai: String
+    -ngayTT: Date
+    +xuLyThanhToan()
+  }
+  
+  KhachHang "1" --> "1" GioHang : có
+  KhachHang "1" --> "*" DonHang : đặt
+  DonHang "1" --> "*" ChiTietDH : chứa
+  ChiTietDH "*" --> "1" SanPham : là
+  DonHang "1" --> "1" ThanhToan : có
+  GioHang "*" --> "*" SanPham : chứa`,
+
+      erd: `erDiagram
+  KHACH_HANG {
+    string ma_kh PK
+    string ho_ten
+    string email
+    string mat_khau
+    string dia_chi
+    string sdt
+  }
+  
+  SAN_PHAM {
+    string ma_sp PK
+    string ten_sp
+    float gia
+    string mo_ta
+    string hinh_anh
+    int so_luong_ton
+    string danh_muc
+  }
+  
+  DON_HANG {
+    string ma_dh PK
+    string ma_kh FK
+    date ngay_dat
+    float tong_tien
+    string trang_thai
+    string dia_chi_giao
+  }
+  
+  CHI_TIET_DH {
+    string ma_dh FK
+    string ma_sp FK
+    int so_luong
+    float don_gia
+  }
+  
+  THANH_TOAN {
+    string ma_tt PK
+    string ma_dh FK
+    string phuong_thuc
+    float so_tien
+    string trang_thai
+    date ngay_tt
+  }
+  
+  KHACH_HANG ||--o{ DON_HANG : "đặt"
+  DON_HANG ||--|{ CHI_TIET_DH : "gồm"
+  SAN_PHAM ||--o{ CHI_TIET_DH : "có trong"
+  DON_HANG ||--|| THANH_TOAN : "thanh toán"`,
+
+      state: `stateDiagram-v2
+  [*] --> MoiTao: Khách đặt hàng
+  
+  MoiTao --> DaXacNhan: NV xác nhận
+  MoiTao --> DaHuy: Khách hủy
+  DaXacNhan --> DangGiao: Chuyển giao hàng
+  DangGiao --> DaGiao: Giao thành công
+  DangGiao --> GiaoThatBai: Giao thất bại
+  GiaoThatBai --> DangGiao: Giao lại
+  GiaoThatBai --> DaHuy: Hủy đơn
+  DaGiao --> HoanThanh: KH xác nhận
+  DaGiao --> YeuCauDoiTra: KH đổi/trả
+  YeuCauDoiTra --> DangDoiTra: NV duyệt
+  DangDoiTra --> HoanTien: Hoàn tiền
+  HoanThanh --> [*]
+  HoanTien --> [*]
+  DaHuy --> [*]`,
+    },
+  },
+
+  cinema: {
+    name: "Đặt vé xem phim",
+    description:
+      "Hệ thống đặt vé xem phim online cho phép khách hàng chọn phim, suất chiếu, ghế và thanh toán",
+    diagrams: {
+      usecase: `flowchart LR
+  subgraph HệThống["🎬 HỆ THỐNG ĐẶT VÉ XEM PHIM"]
+    UC1["🎥 Xem lịch chiếu"]
+    UC2["💺 Chọn ghế ngồi"]
+    UC3["🎟️ Đặt vé"]
+    UC4["💳 Thanh toán"]
+    UC5["📱 Nhận vé điện tử"]
+    UC6["🎞️ Quản lý phim"]
+    UC7["📅 Quản lý suất chiếu"]
+    UC8["📊 Thống kê doanh thu"]
+    UC9["🔐 Đăng nhập"]
+    UC10["🍿 Đặt combo bắp nước"]
+  end
+  
+  KH["🧑 Khách hàng"]
+  NV["👩‍💼 Nhân viên"]
+  QTV["🧑‍💻 Quản trị viên"]
+  
+  KH --> UC9
+  KH --> UC1
+  KH --> UC2
+  KH --> UC3
+  KH --> UC4
+  KH --> UC5
+  KH --> UC10
+  
+  NV --> UC9
