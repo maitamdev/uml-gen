@@ -231,6 +231,17 @@ function setupEventListeners() {
   $('#exportPngBtn').addEventListener('click', handleExportPng);
   $('#copyAnalysisBtn').addEventListener('click', handleCopyAnalysis);
 
+  // Guide toggle
+  const guideToggle = document.getElementById('guideToggle');
+  const guideContent = document.getElementById('guideContent');
+  const guideChevron = document.getElementById('guideChevron');
+  if (guideToggle && guideContent && guideChevron) {
+    guideToggle.addEventListener('click', () => {
+      guideContent.classList.toggle('open');
+      guideChevron.classList.toggle('open');
+    });
+  }
+
   $('#zoomInBtn').addEventListener('click', () => adjustZoom(0.2));
   $('#zoomOutBtn').addEventListener('click', () => adjustZoom(-0.2));
   $('#resetZoomBtn').addEventListener('click', () => {
