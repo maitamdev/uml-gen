@@ -128,3 +128,103 @@ export const templates: Record<string, Template> = {
       class: `classDiagram
   class SinhVien {
     -maSV: String
+    -hoTen: String
+    -email: String
+    -soDienThoai: String
+    -khoa: String
+    +dangNhap()
+    +timKiemSach()
+    +muonSach()
+    +traSach()
+    +xemLichSu()
+  }
+  
+  class TheThuvien {
+    -maThe: String
+    -ngayCap: Date
+    -ngayHetHan: Date
+    -trangThai: String
+    +kiemTraHopLe()
+    +giaHan()
+  }
+  
+  class Sach {
+    -maSach: String
+    -tenSach: String
+    -tacGia: String
+    -theLoai: String
+    -namXuatBan: int
+    -soLuong: int
+    -moTa: String
+    +kiemTraTonKho()
+    +capNhatSoLuong()
+  }
+  
+  class PhieuMuon {
+    -maPhieu: String
+    -ngayMuon: Date
+    -ngayTraDuKien: Date
+    -ngayTraThucTe: Date
+    -trangThai: String
+    +taoPhieu()
+    +giaHan()
+    +tinhPhat()
+  }
+  
+  class ThuThu {
+    -maNV: String
+    -hoTen: String
+    +duyetMuonSach()
+    +nhanTraSach()
+    +quanLySach()
+  }
+  
+  class QuanTriVien {
+    -maQTV: String
+    -hoTen: String
+    +quanLyTaiKhoan()
+    +thongKe()
+    +cauHinh()
+  }
+  
+  SinhVien "1" --> "1" TheThuvien : sở hữu
+  SinhVien "1" --> "*" PhieuMuon : tạo
+  PhieuMuon "*" --> "1" Sach : chứa
+  ThuThu "1" --> "*" PhieuMuon : duyệt
+  QuanTriVien "1" --> "*" ThuThu : quản lý`,
+
+      erd: `erDiagram
+  SINH_VIEN {
+    string ma_sv PK
+    string ho_ten
+    string email
+    string sdt
+    string khoa
+    date ngay_sinh
+  }
+  
+  THE_THU_VIEN {
+    string ma_the PK
+    string ma_sv FK
+    date ngay_cap
+    date ngay_het_han
+    string trang_thai
+  }
+  
+  SACH {
+    string ma_sach PK
+    string ten_sach
+    string tac_gia
+    string the_loai
+    int nam_xb
+    int so_luong
+    string nha_xb
+  }
+  
+  PHIEU_MUON {
+    string ma_phieu PK
+    string ma_sv FK
+    string ma_nv FK
+    date ngay_muon
+    date ngay_tra_dk
+    date ngay_tra_tt
