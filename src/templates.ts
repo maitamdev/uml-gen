@@ -228,3 +228,113 @@ export const templates: Record<string, Template> = {
     date ngay_muon
     date ngay_tra_dk
     date ngay_tra_tt
+    string trang_thai
+  }
+  
+  CHI_TIET_MUON {
+    string ma_phieu FK
+    string ma_sach FK
+    int so_luong
+    string ghi_chu
+  }
+  
+  NHAN_VIEN {
+    string ma_nv PK
+    string ho_ten
+    string vai_tro
+    string email
+  }
+  
+  SINH_VIEN ||--o| THE_THU_VIEN : "sở hữu"
+  SINH_VIEN ||--o{ PHIEU_MUON : "tạo"
+  PHIEU_MUON ||--|{ CHI_TIET_MUON : "chứa"
+  SACH ||--o{ CHI_TIET_MUON : "được mượn"
+  NHAN_VIEN ||--o{ PHIEU_MUON : "duyệt"`,
+
+      state: `stateDiagram-v2
+  [*] --> ChuaMuon: Sách có sẵn
+  
+  ChuaMuon --> DangMuon: Sinh viên mượn
+  DangMuon --> DaTraDungHan: Trả đúng hạn
+  DangMuon --> QuaHan: Hết hạn mượn
+  DangMuon --> GiaHan: Yêu cầu gia hạn
+  GiaHan --> DangMuon: Duyệt gia hạn
+  GiaHan --> QuaHan: Từ chối gia hạn
+  QuaHan --> DaTraTreHan: Trả sách + đóng phạt
+  DaTraDungHan --> ChuaMuon: Nhập lại kho
+  DaTraTreHan --> ChuaMuon: Nhập lại kho
+  DaTraDungHan --> [*]
+  DaTraTreHan --> [*]
+  
+  state DangMuon {
+    [*] --> BinhThuong
+    BinhThuong --> SapHetHan: Còn 3 ngày
+    SapHetHan --> BinhThuong: Gia hạn
+  }`,
+    },
+  },
+
+  student: {
+    name: "Quản lý sinh viên",
+    description:
+      "Hệ thống quản lý sinh viên bao gồm đăng ký môn học, quản lý điểm, lớp học",
+    diagrams: {
+      usecase: `flowchart LR
+  subgraph HệThống["🏫 HỆ THỐNG QUẢN LÝ SINH VIÊN"]
+    UC1["📝 Đăng ký môn học"]
+    UC2["📊 Xem điểm"]
+    UC3["📅 Xem thời khóa biểu"]
+    UC4["💰 Đóng học phí"]
+    UC5["👤 Cập nhật thông tin"]
+    UC6["📋 Quản lý lớp học"]
+    UC7["✏️ Nhập điểm"]
+    UC8["📃 Quản lý môn học"]
+    UC9["📈 Thống kê"]
+    UC10["🔐 Đăng nhập"]
+  end
+  
+  SV["🧑‍🎓 Sinh viên"]
+  GV["👨‍🏫 Giảng viên"]
+  PĐT["🏢 Phòng Đào tạo"]
+  
+  SV --> UC10
+  SV --> UC1
+  SV --> UC2
+  SV --> UC3
+  SV --> UC4
+  SV --> UC5
+  
+  GV --> UC10
+  GV --> UC7
+  GV --> UC6
+  
+  PĐT --> UC10
+  PĐT --> UC8
+  PĐT --> UC6
+  PĐT --> UC9`,
+
+      activity: `flowchart TD
+  Start(("🟢 Bắt đầu"))
+  Login["🔐 Đăng nhập"]
+  CheckRole{"👤 Vai trò?"}
+  ViewCourses["📚 Xem danh sách môn"]
+  CheckPrereq{"✅ Đủ điều kiện?"}
+  Register["📝 Đăng ký môn"]
+  CheckCapacity{"🪑 Còn chỗ?"}
+  Confirm["✅ Xác nhận đăng ký"]
+  SaveDB["💾 Lưu vào CSDL"]
+  ShowResult["📋 Hiện kết quả"]
+  Reject["❌ Từ chối"]
+  End(("🔴 Kết thúc"))
+  
+  Start --> Login
+  Login --> CheckRole
+  CheckRole -->|Sinh viên| ViewCourses
+  ViewCourses --> CheckPrereq
+  CheckPrereq -->|Đạt| CheckCapacity
+  CheckPrereq -->|Chưa đạt| Reject
+  CheckCapacity -->|Còn| Register
+  CheckCapacity -->|Hết| Reject
+  Register --> Confirm
+  Confirm --> SaveDB
+  SaveDB --> ShowResult
