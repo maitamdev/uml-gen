@@ -678,3 +678,73 @@ body {
 /* ============================================
    BUTTONS
    ============================================ */
+
+.btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: none; border-radius: var(--radius-sm);
+  font-family: inherit; font-size: 0.82rem; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+  white-space: nowrap;
+  position: relative;
+}
+
+.btn-primary {
+  background: var(--gradient-btn);
+  color: white;
+  box-shadow: 0 4px 16px rgba(99,102,241,0.3);
+}
+
+.btn-primary:hover {
+  background: var(--gradient-btn-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(99,102,241,0.4);
+}
+
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-generate {
+  padding: 0.7rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.btn-shine {
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 45%, rgba(255,255,255,0.05) 50%, transparent 55%);
+  animation: btn-shine-anim 3s infinite;
+}
+
+@keyframes btn-shine-anim {
+  0% { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(200%); }
+}
+
+.btn-icon { font-size: 1.05rem; position: relative; z-index: 1; }
+.btn-text { position: relative; z-index: 1; }
+
+.btn-loader {
+  display: none;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  position: relative; z-index: 1;
+}
+
+.btn-generate.loading .btn-text,
+.btn-generate.loading .btn-icon,
+.btn-generate.loading .btn-shine { display: none; }
+.btn-generate.loading .btn-loader { display: block; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 0.35rem 0.6rem;
