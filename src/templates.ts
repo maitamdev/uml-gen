@@ -898,3 +898,123 @@ export const templates: Record<string, Template> = {
     -ngayDat: Date
     -trangThai: String
     -tongTien: double
+    +taoVe()
+    +huyVe()
+  }
+  
+  Phim "1" --> "*" SuatChieu : có
+  SuatChieu "*" --> "1" PhongChieu : tại
+  PhongChieu "1" --> "*" GheNgoi : có
+  KhachHang "1" --> "*" VeXemPhim : đặt
+  VeXemPhim "*" --> "1" SuatChieu : thuộc
+  VeXemPhim "*" --> "*" GheNgoi : chọn`,
+
+      erd: `erDiagram
+  KHACH_HANG {
+    string ma_kh PK
+    string ho_ten
+    string email
+    string sdt
+  }
+  
+  PHIM {
+    string ma_phim PK
+    string ten_phim
+    string the_loai
+    int thoi_luong
+    string dao_dien
+    string poster
+  }
+  
+  PHONG_CHIEU {
+    string ma_phong PK
+    string ten_phong
+    int so_ghe
+    string loai_phong
+  }
+  
+  SUAT_CHIEU {
+    string ma_suat PK
+    string ma_phim FK
+    string ma_phong FK
+    date ngay_chieu
+    time gio_chieu
+    float gia_ve
+  }
+  
+  GHE_NGOI {
+    string ma_ghe PK
+    string ma_phong FK
+    string hang
+    int so_ghe
+    string loai_ghe
+  }
+  
+  VE_XEM_PHIM {
+    string ma_ve PK
+    string ma_kh FK
+    string ma_suat FK
+    date ngay_dat
+    float tong_tien
+    string trang_thai
+  }
+  
+  CHI_TIET_VE {
+    string ma_ve FK
+    string ma_ghe FK
+  }
+  
+  KHACH_HANG ||--o{ VE_XEM_PHIM : "đặt"
+  PHIM ||--o{ SUAT_CHIEU : "có"
+  PHONG_CHIEU ||--o{ SUAT_CHIEU : "tại"
+  PHONG_CHIEU ||--|{ GHE_NGOI : "có"
+  SUAT_CHIEU ||--o{ VE_XEM_PHIM : "thuộc"
+  VE_XEM_PHIM ||--|{ CHI_TIET_VE : "gồm"
+  GHE_NGOI ||--o{ CHI_TIET_VE : "là"`,
+
+      state: `stateDiagram-v2
+  [*] --> Trong: Ghế trống
+  
+  Trong --> DangChon: KH chọn ghế
+  DangChon --> DaKhoa: Xác nhận đặt
+  DangChon --> Trong: KH bỏ chọn
+  DaKhoa --> DaDat: Thanh toán OK
+  DaKhoa --> Trong: Hết thời gian giữ
+  DaDat --> DaSuDung: Check-in
+  DaDat --> DaHuy: KH hủy vé
+  DaHuy --> Trong: Mở lại ghế
+  DaSuDung --> Trong: Hết suất chiếu
+  DaSuDung --> [*]`,
+    },
+  },
+
+  hotel: {
+    name: "Quản lý khách sạn",
+    description:
+      "Hệ thống quản lý khách sạn cho phép đặt phòng, check-in/out, quản lý dịch vụ",
+    diagrams: {
+      usecase: `flowchart LR
+  subgraph HệThống["🏨 HỆ THỐNG QUẢN LÝ KHÁCH SẠN"]
+    UC1["🔍 Tìm phòng trống"]
+    UC2["📝 Đặt phòng"]
+    UC3["🔑 Check-in"]
+    UC4["🚪 Check-out"]
+    UC5["🍽️ Đặt dịch vụ"]
+    UC6["💳 Thanh toán"]
+    UC7["🏠 Quản lý phòng"]
+    UC8["📊 Thống kê"]
+    UC9["🔐 Đăng nhập"]
+    UC10["⭐ Đánh giá"]
+  end
+  
+  KH["🧑 Khách hàng"]
+  LT["👩‍💼 Lễ tân"]
+  QL["🧑‍💻 Quản lý"]
+  
+  KH --> UC9
+  KH --> UC1
+  KH --> UC2
+  KH --> UC5
+  KH --> UC6
+  KH --> UC10
+  
