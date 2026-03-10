@@ -454,6 +454,27 @@ function cleanMermaidCode(raw: string): string {
     }
   }
   
+  // ---- FIX: If AI returned 2+ diagrams concatenated, keep only the first ----
+  for (const keyword of diagramKeywords) {
+    const firstIdx = code.indexOf(keyword);
+    if (firstIdx >= 0) {
+      // Look for a SECOND occurrence of any diagram keyword after the first line
+      const afterFirst = code.indexOf('\n');
+      if (afterFirst > 0) {
+        const rest = code.substring(afterFirst);
+        for (const kw2 of diagramKeywords) {
+          const secondIdx = rest.indexOf(kw2);
+          if (secondIdx >= 0) {
+            // Found a second diagram - truncate before it
+            code = code.substring(0, afterFirst + secondIdx).trim();
+            break;
+          }
+        }
+      }
+      break;
+    }
+  }
+  
   return code;
 }
 
