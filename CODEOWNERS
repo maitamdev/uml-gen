@@ -1,0 +1,17 @@
+﻿# Code owners for automatic PR review assignment
+* @maitamdev
+
+# Frontend
+/src/ @maitamdev
+/index.html @maitamdev
+
+# Documentation
+/docs/ @maitamdev
+*.md @maitamdev
+
+# CI/CD
+/.github/ @maitamdev
+
+# Config
+*.json @maitamdev
+*.config.* @maitamdev
