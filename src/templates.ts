@@ -28,3 +28,103 @@ export const templates: Record<string, Template> = {
     name: "Quản lý thư viện",
     description:
       "Hệ thống quản lý thư viện cho phép sinh viên mượn/trả sách, thủ thư quản lý sách và thẻ thư viện",
+    diagrams: {
+      usecase: `flowchart LR
+  subgraph HệThống["🏛️ HỆ THỐNG QUẢN LÝ THƯ VIỆN"]
+    UC1["📖 Mượn sách"]
+    UC2["📗 Trả sách"]
+    UC3["🔍 Tìm kiếm sách"]
+    UC4["📋 Xem lịch sử mượn"]
+    UC5["📚 Quản lý sách"]
+    UC6["🪪 Quản lý thẻ thư viện"]
+    UC7["👤 Quản lý tài khoản"]
+    UC8["📊 Thống kê báo cáo"]
+    UC9["🔐 Đăng nhập"]
+    UC10["⏰ Gia hạn mượn sách"]
+    UC11["💰 Xử lý phạt quá hạn"]
+  end
+  
+  SV["🧑‍🎓 Sinh viên"]
+  TT["👩‍💼 Thủ thư"]
+  QTV["🧑‍💻 Quản trị viên"]
+  
+  SV --> UC9
+  SV --> UC1
+  SV --> UC2
+  SV --> UC3
+  SV --> UC4
+  SV --> UC10
+  
+  TT --> UC9
+  TT --> UC5
+  TT --> UC6
+  TT --> UC1
+  TT --> UC2
+  TT --> UC11
+  
+  QTV --> UC9
+  QTV --> UC7
+  QTV --> UC8`,
+
+      activity: `flowchart TD
+  Start(("🟢 Bắt đầu"))
+  Login["🔐 Đăng nhập hệ thống"]
+  CheckAuth{"✅ Xác thực?"}
+  SearchBook["🔍 Tìm kiếm sách"]
+  CheckAvail{"📖 Sách có sẵn?"}
+  CheckCard{"🪪 Thẻ hợp lệ?"}
+  CreateRequest["📝 Tạo phiếu mượn"]
+  UpdateDB["💾 Cập nhật CSDL"]
+  PrintReceipt["🧾 In phiếu mượn"]
+  Notify["📢 Thông báo không có sách"]
+  InvalidCard["⚠️ Yêu cầu gia hạn thẻ"]
+  End(("🔴 Kết thúc"))
+  
+  Start --> Login
+  Login --> CheckAuth
+  CheckAuth -->|Thành công| SearchBook
+  CheckAuth -->|Thất bại| Login
+  SearchBook --> CheckAvail
+  CheckAvail -->|Có| CheckCard
+  CheckAvail -->|Không| Notify
+  CheckCard -->|Hợp lệ| CreateRequest
+  CheckCard -->|Hết hạn| InvalidCard
+  CreateRequest --> UpdateDB
+  UpdateDB --> PrintReceipt
+  PrintReceipt --> End
+  Notify --> End
+  InvalidCard --> End`,
+
+      sequence: `sequenceDiagram
+  actor SV as 🧑‍🎓 Sinh viên
+  participant HT as 🖥️ Hệ thống
+  participant DB as 🗄️ Cơ sở dữ liệu
+  actor TT as 👩‍💼 Thủ thư
+  
+  SV->>HT: 1. Đăng nhập
+  HT->>DB: Kiểm tra tài khoản
+  DB-->>HT: Xác thực OK
+  HT-->>SV: Đăng nhập thành công
+  
+  SV->>HT: 2. Tìm kiếm sách
+  HT->>DB: Truy vấn sách
+  DB-->>HT: Danh sách kết quả
+  HT-->>SV: Hiển thị sách
+  
+  SV->>HT: 3. Yêu cầu mượn sách
+  HT->>DB: Kiểm tra thẻ thư viện
+  DB-->>HT: Thẻ hợp lệ
+  HT->>DB: Kiểm tra số lượng sách
+  DB-->>HT: Sách có sẵn
+  
+  HT->>TT: 4. Thông báo yêu cầu mượn
+  TT->>HT: 5. Duyệt yêu cầu
+  HT->>DB: Tạo phiếu mượn
+  HT->>DB: Cập nhật số lượng sách
+  DB-->>HT: Lưu thành công
+  HT-->>SV: 6. Gửi phiếu mượn
+  HT-->>SV: Thông báo ngày trả`,
+
+      class: `classDiagram
+  class SinhVien {
+    -maSV: String
