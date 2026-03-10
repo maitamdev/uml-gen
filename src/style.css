@@ -1388,3 +1388,42 @@ body {
 
   .steps-row { gap: 0.3rem; padding: 0.4rem 0.5rem; }
   .step-pill { padding: 0.3rem 0.5rem; }
+  .pill-text { font-size: 0.68rem; }
+
+  .main-content { padding: 0.75rem 1rem 1.5rem; }
+  .input-section { padding: 1.1rem; }
+
+  .features-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+  .feature-card { padding: 0.85rem 0.5rem 0.7rem; }
+  .feature-desc { display: none; }
+  .feature-icon-wrap { width: 40px; height: 40px; }
+  .feature-icon { font-size: 1.2rem; }
+
+  .tab-label { display: none; }
+  .tab { padding: 0.55rem 0.7rem; }
+  .tab-icon { font-size: 1.1rem; }
+
+  .toolbar-actions { flex-wrap: wrap; }
+  .diagram-viewport { min-height: 300px; padding: 1rem; }
+
+  .btn-generate { width: 100%; justify-content: center; }
+
+  .output-split-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .analysis-panel {
+    max-height: 40vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .input-header { flex-direction: column; align-items: flex-start; }
+  .input-actions { flex-direction: column; align-items: stretch; }
+  .ai-status { justify-content: center; }
+
+  .steps-row { flex-wrap: wrap; justify-content: center; }
+  .step-arrow { display: none; }
+}
