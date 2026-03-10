@@ -468,3 +468,53 @@ function toggleCodePanel() {
   const icon = $('#toggleCodeIcon');
   const isHidden = content.style.display === 'none';
   content.style.display = isHidden ? 'block' : 'none';
+  icon.textContent = isHidden ? '▲' : '▼';
+  const label = document.querySelector('.toggle-label');
+  if (label) label.textContent = isHidden ? 'Ẩn code' : 'Hiện code';
+}
+
+function toggleFullscreen() {
+  const panel = document.querySelector('.diagram-panel') as HTMLElement;
+  if (!panel) return;
+
+  const isFullscreen = panel.classList.toggle('fullscreen');
+  document.body.style.overflow = isFullscreen ? 'hidden' : '';
+
+  // Switch icon
+  const icon = document.getElementById('fullscreenIcon');
+  if (icon) {
+    icon.innerHTML = isFullscreen
+      ? '<path d="M4 14h6v6m10-10h-6V4m0 16h6v-6M4 4h6v6"/>'  // collapse
+      : '<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>'; // expand
+  }
+}
+
+// ---- Analysis Helper Functions ----
+function renderAnalysis(markdownText: string) {
+  analysisContent.innerHTML = marked.parse(markdownText) as string;
+}
+
+function showAnalysisLoading() {
+  analysisContent.innerHTML = `
+    <div class="analysis-loading">
+      <div class="shimmer-line"></div>
+      <div class="shimmer-line"></div>
+      <div class="shimmer-line"></div>
+      <div class="shimmer-line"></div>
+      <div class="shimmer-line"></div>
+      <div class="shimmer-line"></div>
+      <div class="shimmer-line"></div>
+      <div class="shimmer-line"></div>
+      <div class="shimmer-line"></div>
+      <div class="shimmer-line"></div>
+    </div>
+  `;
+}
+
+async function generateAnalysisForTab(type: string, requirement: string) {
+  // If already cached, just render
+  if (currentAnalyses[type]) {
+    renderAnalysis(currentAnalyses[type]);
+    return;
+  }
+
