@@ -1118,3 +1118,63 @@ body {
   border-radius: 4px;
   font-family: "JetBrains Mono", monospace;
   font-size: 0.82em;
+  color: var(--purple);
+}
+
+/* ============================================
+   DIAGRAM PANEL
+   ============================================ */
+
+.diagram-panel {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  box-shadow: var(--shadow-lg);
+}
+
+.diagram-toolbar {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  flex-wrap: wrap; gap: 0.5rem;
+  background: rgba(99,102,241,0.02);
+}
+
+.diagram-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.toolbar-actions {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+
+.zoom-group, .export-group {
+  display: flex; align-items: center; gap: 0.25rem;
+}
+
+.toolbar-divider {
+  width: 1px; height: 20px;
+  background: var(--border-subtle);
+  margin: 0 0.25rem;
+}
+
+/* Diagram Viewport */
+.diagram-viewport {
+  min-height: 65vh;
+  max-height: 80vh;
+  overflow: auto;
+  padding: 2rem;
+  display: flex; align-items: center; justify-content: center;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(99,102,241,0.04), transparent 50%),
+    radial-gradient(ellipse at 70% 80%, rgba(139,92,246,0.03), transparent 50%),
+    linear-gradient(var(--bg-base), var(--bg-surface));
+}
+
+.diagram-container {
