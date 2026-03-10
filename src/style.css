@@ -748,3 +748,63 @@ body {
   background: transparent;
   color: var(--text-secondary);
   padding: 0.35rem 0.6rem;
+}
+.btn-ghost:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+
+/* Tool & export buttons */
+.btn-tool {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-muted); cursor: pointer;
+  transition: all 0.2s var(--ease);
+  font-family: inherit;
+}
+
+.btn-tool:hover {
+  background: rgba(99,102,241,0.1);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+.btn-export {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-muted); cursor: pointer;
+  font-family: inherit; font-size: 0.75rem; font-weight: 500;
+  transition: all 0.2s var(--ease);
+}
+
+.btn-export:hover {
+  background: rgba(99,102,241,0.1);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+/* ============================================
+   FEATURE CARDS
+   ============================================ */
+
+.features-section { position: relative; z-index: 1; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.85rem;
+}
+
+.feature-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 0.85rem 1rem;
+  text-align: center;
+  cursor: default;
+  transition: all 0.35s var(--ease);
+  backdrop-filter: blur(10px);
