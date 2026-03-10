@@ -278,3 +278,68 @@ body {
 }
 
 .api-key-input-group {
+  display: flex; gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.api-key-input {
+  flex: 1;
+  padding: 0.55rem 0.75rem;
+  background: rgba(5,5,20,0.6);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: "JetBrains Mono", "Cascadia Code", monospace;
+  font-size: 0.78rem;
+  transition: all 0.25s var(--ease);
+}
+
+.api-key-input::placeholder { color: var(--text-muted); }
+
+.api-key-input:focus {
+  outline: none;
+  border-color: var(--indigo);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+
+.btn-eye {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; flex-shrink: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.btn-eye:hover {
+  background: rgba(99,102,241,0.08);
+  border-color: var(--border-hover);
+}
+
+.btn-save-key {
+  width: 100%;
+  justify-content: center;
+  padding: 0.55rem;
+  font-size: 0.82rem;
+}
+
+/* ============================================
+   HERO
+   ============================================ */
+
+.hero {
+  position: relative; z-index: 1;
+  text-align: center;
+  padding: 3rem 1.5rem 1.5rem;
+}
+
+.hero-glow {
+  position: absolute;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.06) 40%, transparent 70%);
+  pointer-events: none;
+}
