@@ -213,3 +213,68 @@ body {
   position: relative;
 }
 
+.btn-settings {
+  display: flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: rgba(99,102,241,0.06);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+}
+
+.btn-settings:hover {
+  background: rgba(99,102,241,0.12);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  transform: rotate(45deg);
+}
+
+/* Settings Panel */
+.settings-panel {
+  position: absolute;
+  top: calc(100% + 12px); right: 0;
+  width: 340px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-xl), var(--glow-sm);
+  opacity: 0; visibility: hidden;
+  transform: translateY(-8px) scale(0.97);
+  transition: all 0.25s var(--ease);
+  z-index: 300;
+}
+
+.settings-panel.open {
+  opacity: 1; visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.settings-header {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+}
+
+.settings-desc {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+  line-height: 1.5;
+}
+
+.settings-desc a {
+  color: var(--indigo);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.settings-desc a:hover {
+  color: var(--purple);
+  text-decoration: underline;
+}
+
+.api-key-input-group {
