@@ -1018,3 +1018,143 @@ export const templates: Record<string, Template> = {
   KH --> UC6
   KH --> UC10
   
+  LT --> UC9
+  LT --> UC3
+  LT --> UC4
+  LT --> UC2
+  LT --> UC7
+  
+  QL --> UC9
+  QL --> UC7
+  QL --> UC8`,
+
+      activity: `flowchart TD
+  Start(("🟢 Bắt đầu"))
+  Search["🔍 Tìm phòng trống"]
+  CheckAvail{"📋 Có phòng?"}
+  SelectRoom["🏠 Chọn phòng"]
+  EnterInfo["📝 Nhập thông tin"]
+  Payment["💳 Thanh toán đặt cọc"]
+  PayOK{"✅ Thành công?"}
+  Confirm["✅ Xác nhận đặt phòng"]
+  SendEmail["📧 Gửi xác nhận"]
+  NoRoom["❌ Hết phòng"]
+  PayFail["❌ TT thất bại"]
+  End(("🔴 Kết thúc"))
+  
+  Start --> Search
+  Search --> CheckAvail
+  CheckAvail -->|Có| SelectRoom
+  CheckAvail -->|Không| NoRoom
+  SelectRoom --> EnterInfo
+  EnterInfo --> Payment
+  Payment --> PayOK
+  PayOK -->|Có| Confirm
+  PayOK -->|Không| PayFail
+  PayFail --> Payment
+  Confirm --> SendEmail
+  SendEmail --> End
+  NoRoom --> End`,
+
+      sequence: `sequenceDiagram
+  actor KH as 🧑 Khách hàng
+  participant Web as 🌐 Website
+  participant HT as ⚙️ Hệ thống
+  participant DB as 🗄️ CSDL
+  actor LT as 👩‍💼 Lễ tân
+  
+  KH->>Web: Tìm phòng trống
+  Web->>HT: GET /rooms?date=...
+  HT->>DB: Query phòng
+  DB-->>HT: Danh sách phòng trống
+  HT-->>Web: Hiển thị phòng
+  
+  KH->>Web: Đặt phòng
+  Web->>HT: POST /bookings
+  HT->>DB: Tạo đặt phòng
+  DB-->>HT: OK
+  HT-->>Web: Xác nhận
+  Web-->>KH: Email xác nhận
+  
+  Note over KH,LT: Ngày check-in
+  KH->>LT: Đến check-in
+  LT->>HT: Xác nhận check-in
+  HT->>DB: Cập nhật trạng thái
+  DB-->>HT: OK
+  LT-->>KH: Giao chìa khóa
+  
+  Note over KH,LT: Ngày check-out
+  KH->>LT: Check-out
+  LT->>HT: Tính tổng chi phí
+  HT->>DB: Query dịch vụ đã dùng
+  DB-->>HT: Chi tiết
+  HT-->>LT: Hóa đơn tổng
+  KH->>LT: Thanh toán
+  LT->>HT: Xác nhận thanh toán
+  HT->>DB: Cập nhật phòng trống`,
+
+      class: `classDiagram
+  class KhachHang {
+    -maKH: String
+    -hoTen: String
+    -cmnd: String
+    -soDT: String
+    -email: String
+    +datPhong()
+    +checkIn()
+    +checkOut()
+  }
+  
+  class Phong {
+    -maPhong: String
+    -loaiPhong: String
+    -gia: double
+    -tang: int
+    -trangThai: String
+    -moTa: String
+    +kiemTraTrong()
+    +capNhatTrangThai()
+  }
+  
+  class DatPhong {
+    -maDat: String
+    -ngayDat: Date
+    -ngayNhan: Date
+    -ngayTra: Date
+    -trangThai: String
+    -tongTien: double
+    +xacNhan()
+    +huy()
+    +tinhTien()
+  }
+  
+  class DichVu {
+    -maDV: String
+    -tenDV: String
+    -gia: double
+    -moTa: String
+    +datDV()
+  }
+  
+  class HoaDon {
+    -maHD: String
+    -ngayLap: Date
+    -tongTien: double
+    -trangThai: String
+    +tinhTong()
+    +xuatHD()
+  }
+  
+  class LeTan {
+    -maNV: String
+    -hoTen: String
+    +checkIn()
+    +checkOut()
+    +taoHoaDon()
+  }
+  
+  KhachHang "1" --> "*" DatPhong : đặt
+  DatPhong "*" --> "1" Phong : cho
+  KhachHang "1" --> "*" HoaDon : có
+  HoaDon "*" --> "*" DichVu : gồm
+  LeTan "1" --> "*" HoaDon : tạo`,
