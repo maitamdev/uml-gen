@@ -1,7 +1,12 @@
+﻿![CI](https://github.com/maitamdev/uml-gen/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/github/license/maitamdev/uml-gen)
+![Version](https://img.shields.io/badge/version-1.1.0-blue)
+![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)
+
 <p align="center">
-  <h1 align="center">📐 UML Diagram Generator</h1>
+  <h1 align="center">ðŸ“ UML Diagram Generator</h1>
   <p align="center">
-    <strong>Tự động tạo sơ đồ UML từ mô tả tiếng Việt bằng AI</strong>
+    <strong>Tá»± Ä‘á»™ng táº¡o sÆ¡ Ä‘á»“ UML tá»« mÃ´ táº£ tiáº¿ng Viá»‡t báº±ng AI</strong>
   </p>
   <p align="center">
     <a href="https://github.com/maitamdev/uml-gen">
@@ -15,28 +20,28 @@
 
 ---
 
-## ✨ Tính năng
+## âœ¨ TÃ­nh nÄƒng
 
-- 🤖 **AI-Powered** — Hỗ trợ 2 provider: Hugging Face & Groq, tự động chuyển đổi khi hết quota
-- 📊 **4 loại sơ đồ UML** — Use Case, Activity, Sequence, Class Diagram
-- 📝 **Phân tích song song** — Bài phân tích chi tiết bằng tiếng Việt đi kèm mỗi sơ đồ
-- 🎨 **Giao diện premium** — Dark theme, glassmorphism, micro-animations
-- 📥 **Xuất file** — SVG, PNG, copy to clipboard
-- 📱 **Responsive** — Hoạt động trên mọi thiết bị
-- 🔀 **Auto-Failover** — Tự động chuyển provider khi gặp lỗi quota/rate-limit
+- ðŸ¤– **AI-Powered** â€” Há»— trá»£ 2 provider: Hugging Face & Groq, tá»± Ä‘á»™ng chuyá»ƒn Ä‘á»•i khi háº¿t quota
+- ðŸ“Š **4 loáº¡i sÆ¡ Ä‘á»“ UML** â€” Use Case, Activity, Sequence, Class Diagram
+- ðŸ“ **PhÃ¢n tÃ­ch song song** â€” BÃ i phÃ¢n tÃ­ch chi tiáº¿t báº±ng tiáº¿ng Viá»‡t Ä‘i kÃ¨m má»—i sÆ¡ Ä‘á»“
+- ðŸŽ¨ **Giao diá»‡n premium** â€” Dark theme, glassmorphism, micro-animations
+- ðŸ“¥ **Xuáº¥t file** â€” SVG, PNG, copy to clipboard
+- ðŸ“± **Responsive** â€” Hoáº¡t Ä‘á»™ng trÃªn má»i thiáº¿t bá»‹
+- ðŸ”€ **Auto-Failover** â€” Tá»± Ä‘á»™ng chuyá»ƒn provider khi gáº·p lá»—i quota/rate-limit
 
-## 🖼️ Demo
+## ðŸ–¼ï¸ Demo
 
-> Nhập mô tả đề tài → AI tạo 4 sơ đồ UML + bài phân tích chi tiết
+> Nháº­p mÃ´ táº£ Ä‘á» tÃ i â†’ AI táº¡o 4 sÆ¡ Ä‘á»“ UML + bÃ i phÃ¢n tÃ­ch chi tiáº¿t
 
-## 🚀 Cài đặt & Chạy
+## ðŸš€ CÃ i Ä‘áº·t & Cháº¡y
 
-### Yêu cầu
+### YÃªu cáº§u
 
-- [Node.js](https://nodejs.org/) phiên bản 18+
-- API Key từ [Hugging Face](https://huggingface.co/settings/tokens) hoặc [Groq](https://console.groq.com/keys) (miễn phí)
+- [Node.js](https://nodejs.org/) phiÃªn báº£n 18+
+- API Key tá»« [Hugging Face](https://huggingface.co/settings/tokens) hoáº·c [Groq](https://console.groq.com/keys) (miá»…n phÃ­)
 
-### Bước 1: Clone & Cài đặt
+### BÆ°á»›c 1: Clone & CÃ i Ä‘áº·t
 
 ```bash
 git clone https://github.com/maitamdev/uml-gen.git
@@ -44,93 +49,94 @@ cd uml-gen
 npm install
 ```
 
-### Bước 2: Chạy dev server
+### BÆ°á»›c 2: Cháº¡y dev server
 
 ```bash
 npm run dev
 ```
 
-Mở trình duyệt tại `http://localhost:5173`
+Má»Ÿ trÃ¬nh duyá»‡t táº¡i `http://localhost:5173`
 
-### Bước 3: Cấu hình API Key
+### BÆ°á»›c 3: Cáº¥u hÃ¬nh API Key
 
-1. Bấm ⚙️ **Settings** ở góc phải trên
-2. Chọn provider (khuyên dùng **Hugging Face**)
-3. Dán API Key → Bấm **Lưu & Kiểm tra**
-4. Khi thấy 🟢 xanh là sẵn sàng!
+1. Báº¥m âš™ï¸ **Settings** á»Ÿ gÃ³c pháº£i trÃªn
+2. Chá»n provider (khuyÃªn dÃ¹ng **Hugging Face**)
+3. DÃ¡n API Key â†’ Báº¥m **LÆ°u & Kiá»ƒm tra**
+4. Khi tháº¥y ðŸŸ¢ xanh lÃ  sáºµn sÃ ng!
 
-## 🔑 Hướng dẫn lấy API Key
+## ðŸ”‘ HÆ°á»›ng dáº«n láº¥y API Key
 
-### Hugging Face (Khuyên dùng)
+### Hugging Face (KhuyÃªn dÃ¹ng)
 
-1. Truy cập [huggingface.co/join](https://huggingface.co/join) → Đăng ký (bằng Google/GitHub cho nhanh)
-2. Vào [Settings → Tokens](https://huggingface.co/settings/tokens) → **Create new token**
+1. Truy cáº­p [huggingface.co/join](https://huggingface.co/join) â†’ ÄÄƒng kÃ½ (báº±ng Google/GitHub cho nhanh)
+2. VÃ o [Settings â†’ Tokens](https://huggingface.co/settings/tokens) â†’ **Create new token**
    - Token name: `uml-generator`
-   - Token type: **Read** (đủ dùng)
-3. Bấm **Create token** → Copy token (bắt đầu bằng `hf_...`)
-4. Dán vào app → Lưu
+   - Token type: **Read** (Ä‘á»§ dÃ¹ng)
+3. Báº¥m **Create token** â†’ Copy token (báº¯t Ä‘áº§u báº±ng `hf_...`)
+4. DÃ¡n vÃ o app â†’ LÆ°u
 
-> 💡 **Miễn phí**: ~300 requests/giờ
+> ðŸ’¡ **Miá»…n phÃ­**: ~300 requests/giá»
 
 ### Groq
 
-1. Truy cập [console.groq.com/keys](https://console.groq.com/keys) → Đăng nhập
-2. Bấm **Create API Key** → Copy key (bắt đầu bằng `gsk_...`)
-3. Đổi provider sang **Groq** trong Settings → Dán key → Lưu
+1. Truy cáº­p [console.groq.com/keys](https://console.groq.com/keys) â†’ ÄÄƒng nháº­p
+2. Báº¥m **Create API Key** â†’ Copy key (báº¯t Ä‘áº§u báº±ng `gsk_...`)
+3. Äá»•i provider sang **Groq** trong Settings â†’ DÃ¡n key â†’ LÆ°u
 
-> ⚡ **Nhanh hơn** Hugging Face nhưng giới hạn requests/phút
+> âš¡ **Nhanh hÆ¡n** Hugging Face nhÆ°ng giá»›i háº¡n requests/phÃºt
 
-### 💡 Mẹo: Nhập key cho CẢ 2 provider
+### ðŸ’¡ Máº¹o: Nháº­p key cho Cáº¢ 2 provider
 
-Khi 1 provider hết quota → app **tự động chuyển** sang provider còn lại!
+Khi 1 provider háº¿t quota â†’ app **tá»± Ä‘á»™ng chuyá»ƒn** sang provider cÃ²n láº¡i!
 
-## 🏗️ Build Production
+## ðŸ—ï¸ Build Production
 
 ```bash
 npm run build
 ```
 
-Folder `dist/` chứa file tĩnh, deploy lên bất kỳ hosting nào:
+Folder `dist/` chá»©a file tÄ©nh, deploy lÃªn báº¥t ká»³ hosting nÃ o:
 
-- [Vercel](https://vercel.com) (khuyên dùng)
+- [Vercel](https://vercel.com) (khuyÃªn dÃ¹ng)
 - [Netlify](https://netlify.com)
 - GitHub Pages
 
-## 🛠️ Tech Stack
+## ðŸ› ï¸ Tech Stack
 
-| Công nghệ            | Mục đích                  |
+| CÃ´ng nghá»‡            | Má»¥c Ä‘Ã­ch                  |
 | -------------------- | ------------------------- |
 | **Vite**             | Build tool & dev server   |
 | **TypeScript**       | Type-safe JavaScript      |
-| **Mermaid.js**       | Render sơ đồ UML          |
-| **Marked.js**        | Render Markdown phân tích |
+| **Mermaid.js**       | Render sÆ¡ Ä‘á»“ UML          |
+| **Marked.js**        | Render Markdown phÃ¢n tÃ­ch |
 | **Hugging Face API** | AI provider (Qwen 72B)    |
 | **Groq API**         | AI provider (LLaMA 70B)   |
 
-## 📁 Cấu trúc dự án
+## ðŸ“ Cáº¥u trÃºc dá»± Ã¡n
 
 ```
 uml-gen/
-├── index.html              # Trang chính
-├── src/
-│   ├── main.ts             # Logic ứng dụng
-│   ├── ai-generator.ts     # AI provider & prompt system
-│   ├── diagram-renderer.ts # Mermaid renderer
-│   ├── export.ts           # Xuất SVG/PNG
-│   ├── templates.ts        # Đề mẫu sẵn
-│   └── style.css           # Thiết kế giao diện
-├── package.json
-├── vite.config.ts
-├── vercel.json             # Config deploy Vercel
-└── README.md
+â”œâ”€â”€ index.html              # Trang chÃ­nh
+â”œâ”€â”€ src/
+â”‚   â”œâ”€â”€ main.ts             # Logic á»©ng dá»¥ng
+â”‚   â”œâ”€â”€ ai-generator.ts     # AI provider & prompt system
+â”‚   â”œâ”€â”€ diagram-renderer.ts # Mermaid renderer
+â”‚   â”œâ”€â”€ export.ts           # Xuáº¥t SVG/PNG
+â”‚   â”œâ”€â”€ templates.ts        # Äá» máº«u sáºµn
+â”‚   â””â”€â”€ style.css           # Thiáº¿t káº¿ giao diá»‡n
+â”œâ”€â”€ package.json
+â”œâ”€â”€ vite.config.ts
+â”œâ”€â”€ vercel.json             # Config deploy Vercel
+â””â”€â”€ README.md
 ```
 
-## 📄 License
+## ðŸ“„ License
 
-[MIT License](LICENSE) © 2026 [MaiTamDev](https://github.com/maitamdev)
+[MIT License](LICENSE) Â© 2026 [MaiTamDev](https://github.com/maitamdev)
 
 ---
 
 <p align="center">
-  Made with ❤️ by <a href="https://github.com/maitamdev"><strong>MaiTamDev</strong></a>
+  Made with â¤ï¸ by <a href="https://github.com/maitamdev"><strong>MaiTamDev</strong></a>
 </p>
+
