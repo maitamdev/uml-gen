@@ -48,3 +48,53 @@ const diagramLabels: Record<string, string> = {
   gantt: 'Gantt Chart',
 };
 
+// ---- Initialize ----
+async function init() {
+  initMermaid();
+  setupApiKeyUI();
+  setupEventListeners();
+  setupScrollAnimations();
+  await checkAIStatus();
+}
+
+// ---- API Key & Provider UI ----
+function setupApiKeyUI() {
+  const settingsBtn = document.getElementById('settingsBtn');
+  const settingsPanel = document.getElementById('settingsPanel');
+  const apiKeyInput = document.getElementById('apiKeyInput') as HTMLInputElement;
+  const saveKeyBtn = document.getElementById('saveKeyBtn');
+  const toggleKeyBtn = document.getElementById('toggleKeyBtn');
+  const providerSelect = document.getElementById('providerSelect') as HTMLSelectElement;
+
+  if (!settingsBtn || !settingsPanel || !apiKeyInput || !saveKeyBtn) return;
+
+  // Load saved key & provider
+  const savedKey = getApiKey();
+  if (savedKey) {
+    apiKeyInput.value = savedKey;
+  }
+
+  // Setup provider selector
+  if (providerSelect) {
+    providerSelect.value = getProvider();
+    updateInputPlaceholder(apiKeyInput);
+
+    providerSelect.addEventListener('change', () => {
+      setProvider(providerSelect.value as ProviderType);
+      updateInputPlaceholder(apiKeyInput);
+      // Update settings panel link
+      const linkEl = settingsPanel.querySelector('.settings-desc a') as HTMLAnchorElement;
+      const config = getProviderConfig();
+      if (linkEl) {
+        linkEl.href = config.keyLink;
+        linkEl.textContent = config.keyLinkText;
+      }
+      // Update header badge
+      const badgeEl = document.querySelector('.header-badge');
+      if (badgeEl) {
+        const textNode = Array.from(badgeEl.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
+        if (textNode) textNode.textContent = ` ${config.name}`;
+      }
+    });
+  }
+
