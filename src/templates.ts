@@ -778,3 +778,123 @@ export const templates: Record<string, Template> = {
   KH --> UC10
   
   NV --> UC9
+  NV --> UC3
+  NV --> UC7
+  
+  QTV --> UC9
+  QTV --> UC6
+  QTV --> UC7
+  QTV --> UC8`,
+
+      activity: `flowchart TD
+  Start(("🟢 Bắt đầu"))
+  SelectMovie["🎥 Chọn phim"]
+  SelectShowtime["📅 Chọn suất chiếu"]
+  SelectSeats["💺 Chọn ghế"]
+  AddCombo["🍿 Thêm combo?"]
+  ChooseCombo["🥤 Chọn combo"]
+  ShowTotal["💰 Hiển thị tổng tiền"]
+  Payment["💳 Thanh toán"]
+  PayOK{"✅ Thành công?"}
+  GenTicket["🎟️ Tạo vé điện tử"]
+  SendEmail["📧 Gửi email"]
+  PayFail["❌ Thất bại"]
+  End(("🔴 Kết thúc"))
+  
+  Start --> SelectMovie
+  SelectMovie --> SelectShowtime
+  SelectShowtime --> SelectSeats
+  SelectSeats --> AddCombo
+  AddCombo -->|Có| ChooseCombo
+  AddCombo -->|Không| ShowTotal
+  ChooseCombo --> ShowTotal
+  ShowTotal --> Payment
+  Payment --> PayOK
+  PayOK -->|Có| GenTicket
+  PayOK -->|Không| PayFail
+  PayFail --> Payment
+  GenTicket --> SendEmail
+  SendEmail --> End`,
+
+      sequence: `sequenceDiagram
+  actor KH as 🧑 Khách hàng
+  participant App as 📱 Ứng dụng
+  participant Server as ⚙️ Server
+  participant DB as 🗄️ CSDL
+  participant Pay as 🏦 Thanh toán
+  
+  KH->>App: Chọn phim & suất chiếu
+  App->>Server: GET /showtimes
+  Server->>DB: Query suất chiếu
+  DB-->>Server: Danh sách suất chiếu
+  Server-->>App: Hiển thị suất chiếu
+  
+  KH->>App: Chọn ghế ngồi
+  App->>Server: GET /seats?showtime=...
+  Server->>DB: Query ghế trống
+  DB-->>Server: Sơ đồ ghế
+  Server-->>App: Hiển thị ghế
+  
+  KH->>App: Xác nhận đặt vé
+  App->>Server: POST /bookings
+  Server->>DB: Khóa ghế tạm thời
+  Server-->>App: Chuyển sang thanh toán
+  
+  KH->>App: Thanh toán
+  App->>Pay: Yêu cầu thanh toán
+  Pay-->>App: Thành công
+  App->>Server: Xác nhận thanh toán
+  Server->>DB: Cập nhật booking
+  Server-->>App: Tạo vé điện tử
+  App-->>KH: Gửi vé qua email`,
+
+      class: `classDiagram
+  class KhachHang {
+    -maKH: String
+    -hoTen: String
+    -email: String
+    -soDT: String
+    +datVe()
+    +huyVe()
+    +xemLichSu()
+  }
+  
+  class Phim {
+    -maPhim: String
+    -tenPhim: String
+    -theLoai: String
+    -thoiLuong: int
+    -daoDien: String
+    -moTa: String
+    -poster: String
+    +layThongTin()
+  }
+  
+  class SuatChieu {
+    -maSuat: String
+    -ngayChieu: Date
+    -gioChieu: Time
+    -giaVe: double
+    +kiemTraGheTrong()
+  }
+  
+  class PhongChieu {
+    -maPhong: String
+    -tenPhong: String
+    -soGhe: int
+    -loaiPhong: String
+  }
+  
+  class GheNgoi {
+    -maGhe: String
+    -hang: String
+    -so: int
+    -loaiGhe: String
+    +kiemTraTrangThai()
+  }
+  
+  class VeXemPhim {
+    -maVe: String
+    -ngayDat: Date
+    -trangThai: String
+    -tongTien: double
