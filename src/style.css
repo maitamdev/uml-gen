@@ -878,3 +878,63 @@ body {
 }
 
 /* ============================================
+   TABS (Sticky)
+   ============================================ */
+
+.tabs-wrapper {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 100;
+  margin: 0 -1.5rem;
+  padding: 0.5rem 1.5rem;
+  background: rgba(5,5,15,0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.tabs-container {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs-container::-webkit-scrollbar { display: none; }
+
+.tabs {
+  display: flex; gap: 0.3rem;
+  min-width: min-content;
+}
+
+.tab {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit; font-size: 0.82rem; font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s var(--ease);
+  white-space: nowrap;
+  flex: 1; justify-content: center;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+  background: rgba(99,102,241,0.06);
+  border-color: var(--border-subtle);
+}
+
+.tab.active {
+  background: var(--gradient-btn);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 2px 12px rgba(99,102,241,0.3);
+}
+
+.tab-icon { font-size: 0.95rem; }
+
+/* ============================================
+   SPLIT LAYOUT (Analysis + Diagram)
+   ============================================ */
+
+.output-split-layout {
