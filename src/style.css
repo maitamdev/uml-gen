@@ -58,3 +58,40 @@
 
   font-family: "Inter", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
+
+/* ---- Reset ---- */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+#app { position: relative; min-height: 100vh; }
+
+/* ============================================
+   ANIMATED BACKGROUNDS
+   ============================================ */
+
+.bg-mesh {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -20%, rgba(99,102,241,0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(139,92,246,0.08), transparent),
+    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(236,72,153,0.06), transparent);
+}
+
+.bg-grid {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 70% 50% at 50% 30%, black, transparent);
+}
