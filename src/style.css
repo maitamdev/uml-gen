@@ -1348,3 +1348,43 @@ body {
 .toast.info { border-left: 3px solid var(--indigo); }
 
 @keyframes toast-in {
+  from { transform: translateX(120%) scale(0.9); opacity: 0; }
+  to { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.18); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(99,102,241,0.3); }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1200px) {
+  .output-split-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .analysis-panel {
+    max-height: 50vh;
+  }
+}
+
+@media (max-width: 1024px) {
+  .features-grid { grid-template-columns: repeat(3, 1fr); }
+  .main-content { max-width: 100%; }
+}
+
+@media (max-width: 768px) {
+  .hero { padding: 2rem 1rem 1rem; }
+  .hero-title { font-size: 1.6rem; }
+  .hero-br { display: block; }
+  .hero-subtitle { font-size: 0.9rem; }
+
+  .steps-row { gap: 0.3rem; padding: 0.4rem 0.5rem; }
+  .step-pill { padding: 0.3rem 0.5rem; }
