@@ -208,3 +208,53 @@ function setupEventListeners() {
   });
 
   document.addEventListener('click', () => {
+    templateMenu.classList.remove('open');
+  });
+
+  templateMenu.querySelectorAll('.dropdown-item').forEach((item) => {
+    item.addEventListener('click', (e) => {
+      const key = (e.currentTarget as HTMLElement).dataset.template!;
+      handleTemplateSelect(key);
+      templateMenu.classList.remove('open');
+    });
+  });
+
+  $('#diagramTabs').addEventListener('click', (e) => {
+    const tab = (e.target as HTMLElement).closest('.tab') as HTMLElement;
+    if (!tab) return;
+    const type = tab.dataset.type as keyof DiagramSet;
+    if (type) switchTab(type);
+  });
+
+  $('#copyCodeBtn').addEventListener('click', handleCopyCode);
+  $('#exportSvgBtn').addEventListener('click', handleExportSvg);
+  $('#exportPngBtn').addEventListener('click', handleExportPng);
+  $('#copyAnalysisBtn').addEventListener('click', handleCopyAnalysis);
+
+  $('#zoomInBtn').addEventListener('click', () => adjustZoom(0.2));
+  $('#zoomOutBtn').addEventListener('click', () => adjustZoom(-0.2));
+  $('#resetZoomBtn').addEventListener('click', () => {
+    zoomLevel = 1;
+    diagramContainer.style.transform = `scale(1)`;
+  });
+
+  // Fullscreen toggle
+  $('#fullscreenBtn').addEventListener('click', toggleFullscreen);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const panel = document.querySelector('.diagram-panel');
+      if (panel?.classList.contains('fullscreen')) {
+        toggleFullscreen();
+      }
+    }
+  });
+
+  $('#toggleCodeBtn').addEventListener('click', toggleCodePanel);
+
+  requirementInput.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') handleGenerate();
+  });
+}
+
+// ---- Template Selection ----
+function handleTemplateSelect(key: string) {
