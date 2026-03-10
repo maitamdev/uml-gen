@@ -568,3 +568,36 @@ export async function generateAllDiagrams(
     try {
       onProgress?.(type, 'generating');
       results[type] = await generateDiagram(requirement, type);
+      onProgress?.(type, 'done');
+    } catch (error) {
+      console.error(`Error generating ${type}:`, error);
+      onProgress?.(type, 'error');
+      results[type] = '';
+    }
+  }
+
+  return results;
+}
+
+// ---- Generate All Analyses ----
+export async function generateAllAnalyses(
+  requirement: string,
+  onProgress?: (type: string, status: 'generating' | 'done' | 'error') => void
+): Promise<Record<string, string>> {
+  const types = ['usecase', 'activity', 'sequence', 'class', 'erd', 'state', 'component', 'deployment', 'dfd', 'gantt'];
+  const results: Record<string, string> = {};
+
+  for (const type of types) {
+    try {
+      onProgress?.(type, 'generating');
+      results[type] = await generateAnalysis(requirement, type);
+      onProgress?.(type, 'done');
+    } catch (error) {
+      console.error(`Error generating analysis for ${type}:`, error);
+      onProgress?.(type, 'error');
+      results[type] = '';
+    }
+  }
+
+  return results;
+}
