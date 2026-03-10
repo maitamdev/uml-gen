@@ -395,7 +395,7 @@ QUY TẮC:
 
 ⚠️ NGUYÊN TẮC QUAN TRỌNG (tuân thủ nghiêm ngặt):
 - Hệ thống KHÔNG gửi trực tiếp cho Actor khác (VD: HLV) → phải qua CSDL
-- KHÔNG thêm bước không liên quan đến kịch bản chính (VD: "Cập nhật thông tin" nếu kịch bản là "Đặt lịch")
+- KHÔNG thêm bước không liên quan đến kịch bản chính
 - MỖI kịch bản chỉ tập trung 1 chức năng duy nhất
 
 QUY TẮC CÚ PHÁP:
@@ -404,21 +404,29 @@ QUY TẮC CÚ PHÁP:
    actor U as 👤 Người dùng
    participant HT as 🖥️ Hệ thống
    participant DB as 🗄️ CSDL
-3. PHẢI dùng activate/deactivate để tạo activation bar:
-   U->>+HT: Yêu cầu
-   HT->>+DB: Truy vấn
-   DB-->>-HT: Kết quả
-   HT-->>-U: Phản hồi
-4. Message request dùng: ->>+ (có activate)
-5. Message response dùng: -->>- (có deactivate)
-6. Dùng alt/else cho điều kiện, GHI RÕ điều kiện:
+3. Dùng activate/deactivate TƯỜNG MINH (KHÔNG dùng ->>+ hay -->>-):
+   U->>HT: Yêu cầu
+   activate HT
+   HT->>DB: Truy vấn
+   activate DB
+   DB-->>HT: Kết quả
+   deactivate DB
+   HT-->>U: Phản hồi
+   deactivate HT
+4. ⛔ TUYỆT ĐỐI KHÔNG dùng +/- trong mũi tên (VD: ->>+ hay -->>-)
+5. BÊN TRONG alt/else: CHỈ dùng mũi tên thường ->> và -->>. KHÔNG activate/deactivate bên trong alt/else.
+6. activate/deactivate đặt TRƯỚC và SAU block alt/else:
+   activate HT
    alt Điều kiện đúng
-     HT->>+DB: Cập nhật dữ liệu
-     DB-->>-HT: Xác nhận
-     HT-->>-U: Thành công
+     HT->>DB: Cập nhật
+     activate DB
+     DB-->>HT: OK
+     deactivate DB
+     HT-->>U: Thành công
    else Điều kiện sai
-     HT-->>-U: Thất bại
+     HT-->>U: Thất bại
    end
+   deactivate HT
 7. GIỚI HẠN: Tối đa 3-4 participant, 8-12 message, 1 block alt/else.
 8. Chọn 1 kịch bản cụ thể quan trọng nhất.
 
@@ -427,16 +435,22 @@ sequenceDiagram
   actor U as 👤 Hội viên
   participant HT as 🖥️ Hệ thống
   participant DB as 🗄️ CSDL
-  U->>+HT: Đặt lịch tập
-  HT->>+DB: Kiểm tra lịch HLV
-  DB-->>-HT: Trả lịch
+  U->>HT: Đặt lịch tập
+  activate HT
+  HT->>DB: Kiểm tra lịch HLV
+  activate DB
+  DB-->>HT: Trả lịch
+  deactivate DB
   alt HLV có lịch trống
-    HT->>+DB: Cập nhật lịch HLV
-    DB-->>-HT: Xác nhận
-    HT-->>-U: Đặt lịch thành công
+    HT->>DB: Cập nhật lịch HLV
+    activate DB
+    DB-->>HT: Xác nhận
+    deactivate DB
+    HT-->>U: Đặt lịch thành công
   else HLV không có lịch trống
-    HT-->>-U: Đặt lịch thất bại
-  end`,
+    HT-->>U: Đặt lịch thất bại
+  end
+  deactivate HT`,
 
   class: `Tạo Class Diagram bằng Mermaid classDiagram.
 
