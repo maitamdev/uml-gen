@@ -1,0 +1,9 @@
+﻿User-agent: *
+Allow: /
+Sitemap: https://uml-generator.vercel.app/sitemap.xml
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
