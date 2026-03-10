@@ -398,3 +398,53 @@ QUY TẮC:
 4. Thêm Client:
    CL["💻 Client Browser"] -->|"HTTPS"| S1
 5. GIỚI HẠN: Tối đa 3-4 máy/server, mỗi máy 1-3 component.
+6. Ghi rõ protocol kết nối: HTTP, HTTPS, TCP, WebSocket...
+7. Thể hiện rõ mối quan hệ client-server.`,
+
+  dfd: `Tạo Data Flow Diagram (DFD) Level 0 bằng Mermaid flowchart LR.
+
+QUY TẮC:
+1. Dùng flowchart LR
+2. Entity bên ngoài (External Entity) dùng hình chữ nhật:
+   E1["👤 Khách hàng"]
+3. Tiến trình (Process) dùng hình tròn hoặc oval:
+   P1(("1.0 Xử lý đơn hàng"))
+4. Kho dữ liệu (Data Store) dùng hình trụ hoặc ký hiệu đặc biệt:
+   DS1[("📁 DS1: Đơn hàng")]
+5. Luồng dữ liệu dùng mũi tên có label:
+   E1 -->|"Thông tin đặt hàng"| P1
+   P1 -->|"Lưu đơn"| DS1
+6. GIỚI HẠN: DFD Level 0 chỉ có 1 process trung tâm hoặc 3-5 process chính.
+7. Tối đa 3-4 external entity, 2-4 data store.
+8. Label trên mũi tên phải mô tả DỮ LIỆU gì được truyền.`,
+
+  gantt: `Tạo biểu đồ Gantt cho kế hoạch dự án phần mềm.
+
+QUY TẮC:
+1. Dùng cú pháp gantt
+2. Cấu trúc:
+   gantt
+     title Kế hoạch dự án
+     dateFormat YYYY-MM-DD
+     axisFormat %d/%m
+3. Chia thành các section (giai đoạn):
+   section Phân tích
+   section Thiết kế
+   section Lập trình
+   section Kiểm thử
+   section Triển khai
+4. Mỗi task:
+   Tên công việc : trang_thai, id, ngay_bat_dau, thoi_gian
+   Ví dụ: Thu thập yêu cầu : done, a1, 2024-01-01, 7d
+   Phân tích yêu cầu : active, a2, after a1, 5d
+5. Trạng thái: done, active, crit (quan trọng)
+6. Dùng "after id" để nối task phụ thuộc.
+7. GIỚI HẠN: 5-6 section, mỗi section 2-3 task.
+8. Tổng timeline khoảng 3-4 tháng là hợp lý cho đồ án.`
+};
+
+// ---- Clean Mermaid Code ----
+function cleanMermaidCode(raw: string): string {
+  let code = raw.trim();
+  
+  // Remove markdown code fences
