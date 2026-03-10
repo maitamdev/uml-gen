@@ -1178,3 +1178,63 @@ body {
 }
 
 .diagram-container {
+  transition: transform 0.3s ease;
+  transform-origin: center center;
+  width: 100%;
+  display: flex; justify-content: center;
+}
+
+.diagram-container svg { max-width: 100%; height: auto; }
+
+/* Fullscreen Mode */
+.btn-fullscreen {
+  color: var(--text-muted);
+}
+
+.diagram-panel.fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  border-radius: 0;
+  margin: 0;
+  border: none;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+}
+
+.diagram-panel.fullscreen .diagram-toolbar {
+  flex-shrink: 0;
+  padding: 0.75rem 1.5rem;
+  background: rgba(5,5,15,0.95);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.diagram-panel.fullscreen .diagram-viewport {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  padding: 2rem;
+}
+
+.diagram-panel.fullscreen .btn-fullscreen {
+  color: var(--indigo);
+}
+
+.fullscreen-hint {
+  display: none;
+  position: absolute;
+  bottom: 1rem; right: 1.5rem;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.diagram-panel.fullscreen .fullscreen-hint {
+  display: block;
+}
+
+/* ============================================
+   CODE PANEL
+   ============================================ */
