@@ -335,12 +335,6 @@ async function handleGenerate() {
       (type, status) => {
         if (status === 'done') {
           updateTabStatus(type, 'done');
-          // If user is looking at this tab, render the diagram immediately
-          if (currentType === type && results[type]) {
-            currentMermaidCode = results[type];
-            mermaidCodeEl.textContent = results[type];
-            renderDiagram(results[type], diagramContainer);
-          }
         } else if (status === 'generating') {
           updateTabStatus(type, 'generating');
         }
