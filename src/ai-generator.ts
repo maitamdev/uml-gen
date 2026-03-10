@@ -128,3 +128,53 @@ Giải thích ngắn gọn tại sao dùng include (bắt buộc thực hiện) 
 ## 5. Tổng kết
 Tóm tắt ngắn 2-3 câu về hệ thống.`,
 
+  activity: `Phân tích Activity Diagram (Sơ đồ hoạt động) cho hệ thống được mô tả. Trả về BÀI PHÂN TÍCH có cấu trúc sau:
+
+## 1. Xác định quy trình chính
+Chọn 1 quy trình nghiệp vụ quan trọng nhất của hệ thống (ví dụ: quy trình mượn sách, quy trình đặt hàng...) và giải thích tại sao chọn quy trình này.
+
+## 2. Các bước trong quy trình
+Liệt kê tuần tự các bước xử lý bằng bảng:
+| Bước | Tên hoạt động | Mô tả chi tiết | Actor thực hiện |
+|------|---------------|----------------|----------------|
+
+## 3. Các điểm quyết định (Decision Points)
+Liệt kê các điều kiện rẽ nhánh:
+| Điểm quyết định | Điều kiện | Nhánh Đúng (Yes) | Nhánh Sai (No) |
+|-----------------|-----------|-------------------|----------------|
+
+## 4. Luồng xử lý
+Mô tả luồng chính (happy path) từ đầu đến cuối bằng ký hiệu mũi tên:
+Bắt đầu → Bước 1 → Bước 2 → Điều kiện? → [Có] Bước 3 → Kết thúc
+
+Nếu có luồng ngoại lệ (exception flow), mô tả ngắn gọn.
+
+## 5. Tổng kết
+Tóm tắt quy trình, nhận xét về độ phức tạp và các điểm cần lưu ý.`,
+
+  sequence: `Phân tích Sequence Diagram (Sơ đồ tuần tự) cho hệ thống được mô tả. Trả về BÀI PHÂN TÍCH có cấu trúc sau:
+
+## 1. Kịch bản tương tác
+Chọn 1 kịch bản sử dụng cụ thể quan trọng nhất (ví dụ: "Sinh viên mượn sách", "Khách hàng đặt hàng") và mô tả ngắn gọn kịch bản.
+
+## 2. Các đối tượng tham gia (Participants)
+Liệt kê bằng bảng:
+| STT | Đối tượng | Loại (Actor/System/Database) | Vai trò trong kịch bản |
+|-----|-----------|------------------------------|----------------------|
+
+## 3. Luồng tương tác chi tiết
+Mô tả từng message theo thứ tự thời gian bằng bảng:
+| STT | Từ | Đến | Message | Loại (Request/Response) | Mô tả |
+|-----|-----|-----|---------|------------------------|-------|
+
+## 4. Xử lý điều kiện (Alt/Opt)
+Nếu có, mô tả các trường hợp rẽ nhánh:
+- **Trường hợp 1 (alt)**: Điều kiện → Hành động
+- **Trường hợp 2 (else)**: Điều kiện → Hành động
+
+## 5. Tổng kết
+Tóm tắt luồng tương tác, số lượng message, nhận xét.`,
+
+  class: `Phân tích Class Diagram (Sơ đồ lớp) cho hệ thống được mô tả. Trả về BÀI PHÂN TÍCH có cấu trúc sau:
+
+## 1. Xác định các lớp (Classes)
