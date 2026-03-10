@@ -4,7 +4,7 @@
 
 import './style.css';
 import { initMermaid, renderDiagram, getDiagramSvg } from './diagram-renderer';
-import { checkProviderStatus, generateAllDiagrams, generateAnalysis, getApiKey, setApiKey, getProvider, setProvider, getProviderConfig } from './ai-generator';
+import { checkProviderStatus, generateAllDiagrams, generateAnalysis, getApiKey, setApiKey, getProvider, setProvider, getProviderConfig, setFallbackCallback } from './ai-generator';
 import type { ProviderType } from './ai-generator';
 import { templates, getTemplate } from './templates';
 import { exportSvg, exportPng, copyToClipboard } from './export';
@@ -40,12 +40,6 @@ const diagramLabels: Record<string, string> = {
   activity: 'Activity Diagram',
   sequence: 'Sequence Diagram',
   class: 'Class Diagram',
-  erd: 'Entity Relationship Diagram',
-  state: 'State Diagram',
-  component: 'Component Diagram',
-  deployment: 'Deployment Diagram',
-  dfd: 'Data Flow Diagram (DFD)',
-  gantt: 'Gantt Chart',
 };
 
 // ---- Initialize ----
@@ -54,6 +48,12 @@ async function init() {
   setupApiKeyUI();
   setupEventListeners();
   setupScrollAnimations();
+
+  // Wire up auto-failover notification
+  setFallbackCallback((from, to) => {
+    showToast(`⚠️ ${from} hết quota, tự động chuyển sang ${to}`, 'info');
+  });
+
   await checkAIStatus();
 }
 

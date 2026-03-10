@@ -37,15 +37,34 @@ const PROVIDERS: Record<ProviderType, ProviderConfig> = {
 };
 
 // ---- API Key & Provider Management ----
-const STORAGE_KEY = 'uml-gen-api-key';
 const PROVIDER_STORAGE_KEY = 'uml-gen-provider';
 
-export function getApiKey(): string {
-  return localStorage.getItem(STORAGE_KEY) || '';
+// Store keys per provider
+function getKeyStorageKey(provider: ProviderType): string {
+  return `uml-gen-key-${provider}`;
 }
 
-export function setApiKey(key: string): void {
-  localStorage.setItem(STORAGE_KEY, key.trim());
+export function getApiKey(provider?: ProviderType): string {
+  const p = provider || getProvider();
+  const key = localStorage.getItem(getKeyStorageKey(p));
+  if (key) return key;
+  // Backward compat: check old single key
+  if (!provider) {
+    const oldKey = localStorage.getItem('uml-gen-api-key');
+    if (oldKey) {
+      // Migrate to new format
+      localStorage.setItem(getKeyStorageKey(p), oldKey);
+      return oldKey;
+    }
+  }
+  return '';
+}
+
+export function setApiKey(key: string, provider?: ProviderType): void {
+  const p = provider || getProvider();
+  localStorage.setItem(getKeyStorageKey(p), key.trim());
+  // Also set old key for backward compat
+  localStorage.setItem('uml-gen-api-key', key.trim());
 }
 
 export function getProvider(): ProviderType {
@@ -56,8 +75,14 @@ export function setProvider(provider: ProviderType): void {
   localStorage.setItem(PROVIDER_STORAGE_KEY, provider);
 }
 
-export function getProviderConfig(): ProviderConfig {
-  return PROVIDERS[getProvider()];
+export function getProviderConfig(provider?: ProviderType): ProviderConfig {
+  return PROVIDERS[provider || getProvider()];
+}
+
+// Failover callback - main.ts can set this to show toast
+let _onFallback: ((from: string, to: string) => void) | null = null;
+export function setFallbackCallback(cb: (from: string, to: string) => void): void {
+  _onFallback = cb;
 }
 
 export async function checkProviderStatus(): Promise<boolean> {
@@ -75,6 +100,60 @@ export async function checkProviderStatus(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+// ---- Core AI Call with Auto-Failover ----
+async function callAI(
+  systemPrompt: string,
+  userPrompt: string,
+  providerOverride?: ProviderType
+): Promise<string> {
+  const currentProvider = providerOverride || getProvider();
+  const apiKey = getApiKey(currentProvider);
+  
+  if (!apiKey) {
+    throw new Error('Chưa cấu hình API Key. Vui lòng nhập API Key.');
+  }
+  
+  const config = getProviderConfig(currentProvider);
+  
+  const response = await fetch(config.apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: config.model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt },
+      ],
+      temperature: 0.3,
+      max_tokens: 4096,
+    }),
+  });
+  
+  // Auto-failover on 402 (quota) or 429 (rate limit)
+  if ((response.status === 402 || response.status === 429) && !providerOverride) {
+    const otherProvider: ProviderType = currentProvider === 'huggingface' ? 'groq' : 'huggingface';
+    const otherKey = getApiKey(otherProvider);
+    
+    if (otherKey) {
+      console.warn(`${config.name} quota exceeded (${response.status}), falling back to ${PROVIDERS[otherProvider].name}`);
+      _onFallback?.(config.name, PROVIDERS[otherProvider].name);
+      return callAI(systemPrompt, userPrompt, otherProvider);
+    }
+  }
+  
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    const errMsg = (errData as any)?.error?.message || response.statusText;
+    throw new Error(`${config.name} API error (${response.status}): ${errMsg}`);
+  }
+  
+  const data = await response.json();
+  return (data as any).choices?.[0]?.message?.content || '';
 }
 
 
@@ -450,48 +529,17 @@ function convertUseCaseToFlowchart(raw: string): string {
   return output.join('\n');
 }
 
-// ---- Generate Diagram via Groq ----
+// ---- Generate Diagram via AI ----
 export async function generateDiagram(
   requirement: string,
   diagramType: string
 ): Promise<string> {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error('Chưa cấu hình API Key. Vui lòng nhập API Key.');
-  }
-
-  const config = getProviderConfig();
-
   const diagramPrompt = DIAGRAM_PROMPTS[diagramType];
   if (!diagramPrompt) {
     throw new Error(`Unknown diagram type: ${diagramType}`);
   }
 
-  const response = await fetch(config.apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: config.model,
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: `${diagramPrompt}\n\nĐề tài: ${requirement}` },
-      ],
-      temperature: 0.3,
-      max_tokens: 4096,
-    }),
-  });
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    const errMsg = (errData as any)?.error?.message || response.statusText;
-    throw new Error(`${config.name} API error: ${errMsg}`);
-  }
-
-  const data = await response.json();
-  const content = (data as any).choices?.[0]?.message?.content || '';
+  const content = await callAI(SYSTEM_PROMPT, `${diagramPrompt}\n\nĐề tài: ${requirement}`);
   return cleanMermaidCode(content);
 }
 
@@ -500,43 +548,12 @@ export async function generateAnalysis(
   requirement: string,
   diagramType: string
 ): Promise<string> {
-  const apiKey = getApiKey();
-  if (!apiKey) {
-    throw new Error('Chưa cấu hình API Key. Vui lòng nhập API Key.');
-  }
-
-  const config = getProviderConfig();
-
   const analysisPrompt = ANALYSIS_PROMPTS[diagramType];
   if (!analysisPrompt) {
-    return ''; // No analysis available for this type
+    return '';
   }
 
-  const response = await fetch(config.apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: config.model,
-      messages: [
-        { role: 'system', content: ANALYSIS_SYSTEM_PROMPT },
-        { role: 'user', content: `${analysisPrompt}\n\nĐề tài: ${requirement}` },
-      ],
-      temperature: 0.3,
-      max_tokens: 4096,
-    }),
-  });
-
-  if (!response.ok) {
-    const errData = await response.json().catch(() => ({}));
-    const errMsg = (errData as any)?.error?.message || response.statusText;
-    throw new Error(`${config.name} API error: ${errMsg}`);
-  }
-
-  const data = await response.json();
-  return (data as any).choices?.[0]?.message?.content || '';
+  return callAI(ANALYSIS_SYSTEM_PROMPT, `${analysisPrompt}\n\nĐề tài: ${requirement}`);
 }
 
 // ---- Generate All Diagrams ----
