@@ -448,3 +448,53 @@ function cleanMermaidCode(raw: string): string {
   let code = raw.trim();
   
   // Remove markdown code fences
+  const codeBlockRegex = /```(?:mermaid)?\s*\n?([\s\S]*?)```/;
+  const match = code.match(codeBlockRegex);
+  if (match) {
+    code = match[1].trim();
+  }
+  
+  // Remove leading text before diagram keyword
+  const diagramKeywords = ['flowchart', 'sequenceDiagram', 'classDiagram', 'erDiagram', 'stateDiagram', 'gantt'];
+  for (const keyword of diagramKeywords) {
+    const idx = code.indexOf(keyword);
+    if (idx > 0) {
+      code = code.substring(idx);
+      break;
+    }
+  }
+  
+  return code;
+}
+
+// ---- Generate Diagram via Groq ----
+export async function generateDiagram(
+  requirement: string,
+  diagramType: string
+): Promise<string> {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error('Chưa cấu hình API Key. Vui lòng nhập API Key.');
+  }
+
+  const config = getProviderConfig();
+
+  const diagramPrompt = DIAGRAM_PROMPTS[diagramType];
+  if (!diagramPrompt) {
+    throw new Error(`Unknown diagram type: ${diagramType}`);
+  }
+
+  const response = await fetch(config.apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: config.model,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'user', content: `${diagramPrompt}\n\nĐề tài: ${requirement}` },
+      ],
+      temperature: 0.3,
+      max_tokens: 4096,
