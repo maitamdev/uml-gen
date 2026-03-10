@@ -258,3 +258,53 @@ function setupEventListeners() {
 
 // ---- Template Selection ----
 function handleTemplateSelect(key: string) {
+  const template = getTemplate(key);
+  if (!template) return;
+
+  requirementInput.value = template.description;
+  currentDiagrams = { ...template.diagrams };
+  currentAnalyses = template.analyses ? { ...template.analyses } : {};
+
+  showOutput();
+  switchTab('usecase');
+
+  // If no pre-built analyses, auto-generate analysis for current tab
+  if (!currentAnalyses['usecase'] && groqAvailable) {
+    generateAnalysisForTab('usecase', template.description);
+  }
+
+  showToast(`📋 Đã tải đề mẫu: ${template.name}`, 'success');
+}
+
+// ---- Generate Diagrams ----
+async function handleGenerate() {
+  const requirement = requirementInput.value.trim();
+  if (!requirement) {
+    showToast('⚠️ Vui lòng nhập mô tả đề tài', 'error');
+    requirementInput.focus();
+    return;
+  }
+
+  // Check template match first
+  const matchedTemplate = findMatchingTemplate(requirement);
+  if (matchedTemplate) {
+    currentDiagrams = { ...matchedTemplate.diagrams };
+    showOutput();
+    switchTab('usecase');
+    showToast(`✅ Đã tạo sơ đồ từ template: ${matchedTemplate.name}`, 'success');
+    return;
+  }
+
+  if (!groqAvailable) {
+    const apiKey = getApiKey();
+    if (!apiKey) {
+      showToast('⚠️ Chưa cấu hình API Key. Nhấn ⚙️ để nhập.', 'error');
+    } else {
+      showToast('⚠️ API Key không hợp lệ. Kiểm tra lại hoặc chọn đề mẫu.', 'error');
+    }
+    return;
+  }
+
+  // AI Generation
+  setLoading(true);
+  const providerName = getProviderConfig().name;
