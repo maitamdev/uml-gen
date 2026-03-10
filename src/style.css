@@ -1053,9 +1053,9 @@ body {
 
 .output-split-layout {
   display: grid;
-  grid-template-columns: 40% 1fr;
+  grid-template-columns: 35% 1fr;
   gap: 1rem;
-  min-height: 60vh;
+  min-height: 70vh;
 }
 
 /* ============================================
@@ -1280,11 +1280,10 @@ body {
 
 /* Diagram Viewport */
 .diagram-viewport {
-  min-height: 65vh;
-  max-height: 80vh;
+  min-height: 75vh;
   overflow: auto;
   padding: 2rem;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: flex-start; justify-content: center;
   background:
     radial-gradient(ellipse at 30% 20%, rgba(99,102,241,0.04), transparent 50%),
     radial-gradient(ellipse at 70% 80%, rgba(139,92,246,0.03), transparent 50%),
@@ -1298,7 +1297,7 @@ body {
   display: flex; justify-content: center;
 }
 
-.diagram-container svg { max-width: 100%; height: auto; }
+.diagram-container svg { height: auto; }
 
 /* Fullscreen Mode */
 .btn-fullscreen {
