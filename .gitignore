@@ -33,3 +33,6 @@ desktop.ini
 
 # Vercel
 .vercel
+
+# Build artifacts
+dist/
