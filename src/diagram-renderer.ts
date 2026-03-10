@@ -63,3 +63,69 @@ export function initMermaid(): void {
       actorMargin: 80,
       width: 200,
       height: 45,
+      boxMargin: 10,
+      boxTextMargin: 5,
+      noteMargin: 15,
+      messageMargin: 40,
+      mirrorActors: true,
+      useMaxWidth: true,
+    },
+    er: {
+      useMaxWidth: true,
+    },
+  });
+}
+
+export async function renderDiagram(
+  code: string,
+  container: HTMLElement
+): Promise<boolean> {
+  try {
+    container.innerHTML = '';
+    renderCounter++;
+    const id = `mermaid-diagram-${renderCounter}`;
+    
+    const { svg } = await mermaid.render(id, code);
+    container.innerHTML = svg;
+    
+    // Style the SVG for better display
+    const svgElement = container.querySelector('svg');
+    if (svgElement) {
+      svgElement.style.maxWidth = '100%';
+      svgElement.style.height = 'auto';
+      svgElement.style.minHeight = '200px';
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Mermaid render error:', error);
+    container.innerHTML = `
+      <div style="
+        padding: 2rem;
+        text-align: center;
+        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: 12px;
+        max-width: 500px;
+        margin: auto;
+      ">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚠️</div>
+        <div style="font-weight: 600; margin-bottom: 0.5rem;">Lỗi render sơ đồ</div>
+        <div style="font-size: 0.85rem; color: #a0a0c0;">
+          ${error instanceof Error ? error.message : 'Unknown error'}
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: #6a6a8a;">
+          Thử lại hoặc kiểm tra cú pháp Mermaid code
+        </div>
+      </div>
+    `;
+    return false;
+  }
+}
+
+export function getDiagramSvg(container: HTMLElement): string | null {
+  const svg = container.querySelector('svg');
+  if (!svg) return null;
+  return new XMLSerializer().serializeToString(svg);
+}
