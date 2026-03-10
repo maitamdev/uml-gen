@@ -178,3 +178,53 @@ Tóm tắt luồng tương tác, số lượng message, nhận xét.`,
   class: `Phân tích Class Diagram (Sơ đồ lớp) cho hệ thống được mô tả. Trả về BÀI PHÂN TÍCH có cấu trúc sau:
 
 ## 1. Xác định các lớp (Classes)
+Liệt kê bằng bảng:
+| STT | Tên lớp | Mô tả | Vai trò trong hệ thống |
+|-----|---------|-------|----------------------|
+
+## 2. Thuộc tính của từng lớp
+Cho mỗi lớp, liệt kê thuộc tính:
+
+### Lớp [Tên]
+| Thuộc tính | Kiểu dữ liệu | Phạm vi truy cập | Mô tả |
+|-----------|---------------|-------------------|-------|
+
+## 3. Phương thức của từng lớp
+Cho mỗi lớp, liệt kê phương thức chính:
+
+### Lớp [Tên]
+| Phương thức | Tham số | Kiểu trả về | Mô tả |
+|------------|---------|-------------|-------|
+
+## 4. Quan hệ giữa các lớp
+Liệt kê bằng bảng:
+| Lớp A | Quan hệ | Lớp B | Bản số (Multiplicity) | Mô tả |
+|-------|---------|-------|----------------------|-------|
+
+Các loại quan hệ: Association (liên kết), Aggregation (tập hợp), Composition (hợp thành), Inheritance (kế thừa), Dependency (phụ thuộc).
+
+## 5. Tổng kết
+Tóm tắt kiến trúc lớp, nhận xét về thiết kế.`,
+
+  erd: `Phân tích ERD (Entity Relationship Diagram) cho hệ thống được mô tả. Trả về BÀI PHÂN TÍCH:
+
+## 1. Xác định các thực thể (Entities)
+| STT | Thực thể | Mô tả |
+
+## 2. Thuộc tính của từng thực thể
+Cho mỗi thực thể, liệt kê thuộc tính, khóa chính (PK), khóa ngoại (FK).
+
+## 3. Mối quan hệ giữa các thực thể
+| Thực thể A | Quan hệ | Thực thể B | Bản số | Mô tả |
+
+## 4. Tổng kết
+Nhận xét về mô hình dữ liệu.`,
+
+  state: `Phân tích State Diagram (Sơ đồ trạng thái) cho hệ thống. Trả về BÀI PHÂN TÍCH:
+
+## 1. Đối tượng được phân tích
+Chọn 1 đối tượng chính và giải thích.
+
+## 2. Các trạng thái
+| STT | Trạng thái | Mô tả | Trạng thái đầu/cuối? |
+
