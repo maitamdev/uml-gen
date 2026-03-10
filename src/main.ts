@@ -563,3 +563,56 @@ async function handleCopyAnalysis() {
     success ? 'success' : 'error'
   );
 }
+
+// ---- Export Handlers ----
+async function handleCopyCode() {
+  if (!currentMermaidCode) {
+    showToast('⚠️ Chưa có code để copy', 'error');
+    return;
+  }
+  const success = await copyToClipboard(currentMermaidCode);
+  showToast(
+    success ? '📋 Đã copy Mermaid code!' : '❌ Không thể copy',
+    success ? 'success' : 'error'
+  );
+}
+
+function handleExportSvg() {
+  const svgString = getDiagramSvg(diagramContainer);
+  if (!svgString) {
+    showToast('⚠️ Chưa có sơ đồ để xuất', 'error');
+    return;
+  }
+  exportSvg(svgString, `${currentType}-diagram`);
+  showToast('📥 Đã xuất file SVG!', 'success');
+}
+
+async function handleExportPng() {
+  const svgString = getDiagramSvg(diagramContainer);
+  if (!svgString) {
+    showToast('⚠️ Chưa có sơ đồ để xuất', 'error');
+    return;
+  }
+  try {
+    await exportPng(svgString, `${currentType}-diagram`);
+    showToast('🖼️ Đã xuất file PNG!', 'success');
+  } catch {
+    showToast('❌ Lỗi khi xuất PNG', 'error');
+  }
+}
+
+// ---- Toast Notifications ----
+function showToast(message: string, type: 'success' | 'error' | 'info' = 'info') {
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = 'toast-in 0.3s ease reverse';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ---- Start ----
+init();
