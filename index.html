@@ -413,3 +413,31 @@
             <div class="code-header" id="toggleCodeBtn">
               <div class="code-title-group">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+                </svg>
+                <h3 class="code-title">Mermaid Code</h3>
+              </div>
+              <button class="btn btn-ghost btn-toggle">
+                <span id="toggleCodeIcon">▼</span> <span class="toggle-label">Hiện code</span>
+              </button>
+            </div>
+            <div class="code-content" id="codeContent" style="display: none">
+              <pre><code id="mermaidCode"></code></pre>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="footer-line"></div>
+        <p>Made with <span class="heart">❤️</span> for Software Engineering Students</p>
+      </footer>
+
+      <!-- Toast -->
+      <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
