@@ -1058,3 +1058,63 @@ body {
 }
 
 .analysis-content h3 {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--purple);
+  margin: 1rem 0 0.5rem;
+}
+
+.analysis-content p {
+  margin: 0.5rem 0;
+  color: var(--text-secondary);
+}
+
+.analysis-content strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.analysis-content ul, .analysis-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.analysis-content li {
+  margin: 0.25rem 0;
+  color: var(--text-secondary);
+}
+
+.analysis-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.75rem 0;
+  font-size: 0.82rem;
+}
+
+.analysis-content thead th {
+  background: rgba(99,102,241,0.08);
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: 0.55rem 0.75rem;
+  text-align: left;
+  border: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+
+.analysis-content tbody td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.analysis-content tbody tr:hover {
+  background: rgba(99,102,241,0.04);
+}
+
+.analysis-content code {
+  background: rgba(99,102,241,0.1);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.82em;
