@@ -358,3 +358,58 @@ function findMatchingTemplate(text: string): typeof templates[string] | null {
     cinema: ['phim', 'cinema', 'movie', 'vé xem', 've xem', 'rạp', 'rap'],
     hotel: ['khách sạn', 'khach san', 'hotel', 'check-in', 'checkin'],
   };
+
+  // For longer descriptions, require at least 2 keyword matches to avoid false positives
+  const minMatches = lower.length > 50 ? 2 : 1;
+
+  for (const [key, words] of Object.entries(keywords)) {
+    const matchCount = words.filter(word => lower.includes(word)).length;
+    if (matchCount >= minMatches) return templates[key];
+  }
+  return null;
+}
+
+// ---- Tab Management ----
+function switchTab(type: keyof DiagramSet) {
+  currentType = type;
+
+  document.querySelectorAll('.tab').forEach((tab) => {
+    tab.classList.toggle('active', (tab as HTMLElement).dataset.type === type);
+  });
+
+  diagramTitle.textContent = diagramLabels[type] || type;
+
+  // Update analysis title
+  const analysisTypeLabels: Record<string, string> = {
+    usecase: 'Phân tích Use Case',
+    activity: 'Phân tích Activity Diagram',
+    sequence: 'Phân tích Sequence Diagram',
+    class: 'Phân tích Class Diagram',
+    erd: 'Phân tích ERD',
+    state: 'Phân tích State Diagram',
+    component: 'Phân tích Component Diagram',
+    deployment: 'Phân tích Deployment Diagram',
+    dfd: 'Phân tích DFD',
+    gantt: 'Phân tích Gantt Chart',
+  };
+  analysisTitle.textContent = analysisTypeLabels[type] || 'Phân tích';
+
+  // Update diagram
+  const code = currentDiagrams[type];
+  if (code) {
+    currentMermaidCode = code;
+    mermaidCodeEl.textContent = code;
+    zoomLevel = 1;
+    diagramContainer.style.transform = 'scale(1)';
+    renderDiagram(code, diagramContainer);
+  } else {
+    currentMermaidCode = '';
+    mermaidCodeEl.textContent = '// Chưa có dữ liệu';
+    diagramContainer.innerHTML = `
+      <div style="padding: 3rem; text-align: center; color: var(--text-muted);">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+        <div>Chưa có sơ đồ cho loại này</div>
+      </div>
+    `;
+  }
+
