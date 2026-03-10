@@ -308,3 +308,53 @@ async function handleGenerate() {
   // AI Generation
   setLoading(true);
   const providerName = getProviderConfig().name;
+  showToast(`🤖 ${providerName} đang tạo sơ đồ và phân tích... ⚡`, 'info');
+  showAnalysisLoading();
+
+  try {
+    // Show output immediately so user sees the loading state
+    showOutput();
+    switchTab('usecase');
+
+    // Also start generating analysis for the first tab immediately
+    generateAnalysisForTab('usecase', requirement);
+
+    const results = await generateAllDiagrams(
+      requirement,
+      (type, status) => {
+        if (status === 'done') {
+          updateTabStatus(type, 'done');
+          // If user is looking at this tab, render the diagram immediately
+          if (currentType === type && results[type]) {
+            currentMermaidCode = results[type];
+            mermaidCodeEl.textContent = results[type];
+            renderDiagram(results[type], diagramContainer);
+          }
+        } else if (status === 'generating') {
+          updateTabStatus(type, 'generating');
+        }
+      }
+    );
+
+    currentDiagrams = results as Partial<DiagramSet>;
+    // Re-render current tab to make sure it's up to date
+    switchTab(currentType);
+
+    showToast(`✅ Đã tạo xong tất cả sơ đồ!`, 'success');
+  } catch (error) {
+    console.error('Generation error:', error);
+    showToast(`❌ ${error instanceof Error ? error.message : 'Lỗi khi tạo sơ đồ'}`, 'error');
+  } finally {
+    setLoading(false);
+  }
+}
+
+function findMatchingTemplate(text: string): typeof templates[string] | null {
+  const lower = text.toLowerCase();
+  const keywords: Record<string, string[]> = {
+    library: ['thư viện', 'thu vien', 'library', 'mượn sách', 'muon sach'],
+    student: ['sinh viên', 'sinh vien', 'student', 'môn học', 'mon hoc', 'điểm'],
+    ecommerce: ['bán hàng', 'ban hang', 'ecommerce', 'shop', 'mua hàng', 'mua hang', 'sản phẩm', 'san pham'],
+    cinema: ['phim', 'cinema', 'movie', 'vé xem', 've xem', 'rạp', 'rap'],
+    hotel: ['khách sạn', 'khach san', 'hotel', 'check-in', 'checkin'],
+  };
