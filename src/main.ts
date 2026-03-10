@@ -104,6 +104,14 @@ function setupApiKeyUI() {
     settingsPanel.classList.toggle('open');
   });
 
+  // Setup arrow also opens settings
+  const setupArrow = document.getElementById('setupArrow');
+  if (setupArrow) {
+    setupArrow.addEventListener('click', () => {
+      settingsPanel.classList.add('open');
+    });
+  }
+
   document.addEventListener('click', (e) => {
     if (!settingsPanel.contains(e.target as Node) && !settingsBtn.contains(e.target as Node)) {
       settingsPanel.classList.remove('open');
