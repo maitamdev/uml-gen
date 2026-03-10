@@ -265,22 +265,38 @@ Chọn 1 đối tượng chính và giải thích.
 };
 
 const DIAGRAM_PROMPTS: Record<string, string> = {
-  usecase: `Tạo Use Case Diagram bằng Mermaid flowchart LR.
+  usecase: `Tạo Use Case Diagram bằng cú pháp Mermaid flowchart.
+
+⛔ TUYỆT ĐỐI KHÔNG dùng "useCaseDiagram" — Mermaid KHÔNG hỗ trợ cú pháp này!
+✅ PHẢI dùng "flowchart LR" để vẽ Use Case Diagram.
 
 QUY TẮC BỐ CỤC (RẤT QUAN TRỌNG - tuân thủ nghiêm ngặt):
-1. Dùng flowchart LR
+1. Dòng đầu tiên PHẢI là: flowchart LR
 2. Đặt TẤT CẢ các Actor ở BÊN TRÁI, mỗi actor khai báo trên 1 dòng riêng với emoji:
    A1["👤 Tên Actor 1"]
    A2["👨‍⚕️ Tên Actor 2"]
 3. Tạo 1 subgraph DUY NHẤT chứa tất cả use case:
    subgraph SYS["🏥 Tên Hệ Thống"]
-4. Mỗi use case dùng ID ngắn và emoji:
+4. Mỗi use case dùng ID ngắn và text trong ngoặc kép:
    UC1["📝 Tên chức năng"]
 5. Nối: A1 --> UC1
 6. GIỚI HẠN: Tối đa 8-10 use case chính, 3-5 actor. KHÔNG liệt kê quá nhiều.
-7. Nếu 1 actor có nhiều use case, nhóm các use case liên quan lại gần nhau trong subgraph.
-8. KHÔNG dùng subgraph lồng nhau.
-9. Cuối cùng đóng subgraph: end`,
+7. KHÔNG dùng subgraph lồng nhau.
+8. Cuối cùng đóng subgraph: end
+
+VÍ DỤ ĐÚNG:
+flowchart LR
+  A1["👤 Khách hàng"]
+  A2["👨‍💼 Nhân viên"]
+  subgraph SYS["🛒 Hệ thống bán hàng"]
+    UC1["📝 Đăng nhập"]
+    UC2["🛍️ Đặt hàng"]
+    UC3["📦 Quản lý kho"]
+  end
+  A1 --> UC1
+  A1 --> UC2
+  A2 --> UC1
+  A2 --> UC3`,
 
   activity: `Tạo Activity Diagram bằng Mermaid flowchart TD cho LUỒNG XỬ LÝ CHÍNH của hệ thống.
 
@@ -331,116 +347,6 @@ QUY TẮC:
 5. Đặt tên class bằng tiếng Việt KHÔNG DẤU hoặc tiếng Anh ngắn gọn (ví dụ: BenhNhan, BacSi, HoaDon).
 6. KHÔNG dùng ký tự đặc biệt hay khoảng trắng trong tên class.`,
 
-  erd: `Tạo ERD bằng Mermaid erDiagram.
-
-QUY TẮC:
-1. Dùng erDiagram
-2. Mỗi entity có 3-5 thuộc tính chính:
-   BENH_NHAN {
-     int ma_bn PK
-     string ho_ten
-     date ngay_sinh
-     string sdt
-   }
-3. Quan hệ phải có label mô tả:
-   BENH_NHAN ||--o{ PHIEU_KHAM : "đặt lịch"
-   BAC_SI ||--o{ PHIEU_KHAM : "khám cho"
-4. Kiểu quan hệ:
-   ||--o{  một-nhiều
-   ||--||  một-một
-   }|--|{  nhiều-nhiều
-5. GIỚI HẠN: Tối đa 6-8 entity.
-6. Tên entity dùng UPPER_SNAKE_CASE không dấu: BENH_NHAN, BAC_SI, HOA_DON
-7. Tên thuộc tính dùng lower_snake_case không dấu.`,
-
-  state: `Tạo State Diagram bằng Mermaid stateDiagram-v2 cho ĐỐI TƯỢNG CHÍNH trong hệ thống.
-
-QUY TẮC:
-1. Dùng stateDiagram-v2
-2. Bắt đầu: [*] --> TrangThai1
-3. Kết thúc: TrangThaiCuoi --> [*]
-4. Chuyển đổi: TrangThai1 --> TrangThai2 : Hành động
-5. GIỚI HẠN: Tối đa 6-8 trạng thái.
-6. Chọn 1 đối tượng cụ thể (ví dụ: trạng thái Đơn hàng, trạng thái Phiếu khám...).
-7. Tên trạng thái ngắn gọn, không dấu: ChoKham, DangKham, HoanTat...
-8. Có thể dùng state lồng nhau nếu cần nhưng tối đa 1 cấp.
-9. Dùng note right of để ghi chú nếu cần.`,
-
-  component: `Tạo Component Diagram bằng Mermaid flowchart TB thể hiện kiến trúc hệ thống.
-
-QUY TẮC:
-1. Dùng flowchart TB
-2. Mỗi nhóm component dùng subgraph:
-   subgraph UI["🖥️ Presentation Layer"]
-     C1["📱 Web App"]
-     C2["📲 Mobile App"]
-   end
-3. Các layer phổ biến: Presentation, Business Logic, Data Access, Database
-4. Dùng mũi tên chỉ dependency: C1 --> C3
-5. Mũi tên có label mô tả: C1 -->|"REST API"| C3
-6. GIỚI HẠN: Tối đa 3-4 layer, mỗi layer 2-4 component.
-7. Tên component ngắn gọn, dùng emoji phân biệt layer.
-8. Thể hiện rõ các interface/API giữa các layer.`,
-
-  deployment: `Tạo Deployment Diagram bằng Mermaid flowchart LR thể hiện cấu trúc triển khai.
-
-QUY TẮC:
-1. Dùng flowchart LR
-2. Mỗi node vật lý (server, máy client) dùng subgraph:
-   subgraph Server["🖥️ Web Server"]
-     S1["🌐 Nginx"]
-     S2["⚙️ Node.js App"]
-   end
-   subgraph DB["🗄️ Database Server"]
-     D1["💾 MySQL"]
-   end
-3. Nối các node: S2 -->|"TCP 3306"| D1
-4. Thêm Client:
-   CL["💻 Client Browser"] -->|"HTTPS"| S1
-5. GIỚI HẠN: Tối đa 3-4 máy/server, mỗi máy 1-3 component.
-6. Ghi rõ protocol kết nối: HTTP, HTTPS, TCP, WebSocket...
-7. Thể hiện rõ mối quan hệ client-server.`,
-
-  dfd: `Tạo Data Flow Diagram (DFD) Level 0 bằng Mermaid flowchart LR.
-
-QUY TẮC:
-1. Dùng flowchart LR
-2. Entity bên ngoài (External Entity) dùng hình chữ nhật:
-   E1["👤 Khách hàng"]
-3. Tiến trình (Process) dùng hình tròn hoặc oval:
-   P1(("1.0 Xử lý đơn hàng"))
-4. Kho dữ liệu (Data Store) dùng hình trụ hoặc ký hiệu đặc biệt:
-   DS1[("📁 DS1: Đơn hàng")]
-5. Luồng dữ liệu dùng mũi tên có label:
-   E1 -->|"Thông tin đặt hàng"| P1
-   P1 -->|"Lưu đơn"| DS1
-6. GIỚI HẠN: DFD Level 0 chỉ có 1 process trung tâm hoặc 3-5 process chính.
-7. Tối đa 3-4 external entity, 2-4 data store.
-8. Label trên mũi tên phải mô tả DỮ LIỆU gì được truyền.`,
-
-  gantt: `Tạo biểu đồ Gantt cho kế hoạch dự án phần mềm.
-
-QUY TẮC:
-1. Dùng cú pháp gantt
-2. Cấu trúc:
-   gantt
-     title Kế hoạch dự án
-     dateFormat YYYY-MM-DD
-     axisFormat %d/%m
-3. Chia thành các section (giai đoạn):
-   section Phân tích
-   section Thiết kế
-   section Lập trình
-   section Kiểm thử
-   section Triển khai
-4. Mỗi task:
-   Tên công việc : trang_thai, id, ngay_bat_dau, thoi_gian
-   Ví dụ: Thu thập yêu cầu : done, a1, 2024-01-01, 7d
-   Phân tích yêu cầu : active, a2, after a1, 5d
-5. Trạng thái: done, active, crit (quan trọng)
-6. Dùng "after id" để nối task phụ thuộc.
-7. GIỚI HẠN: 5-6 section, mỗi section 2-3 task.
-8. Tổng timeline khoảng 3-4 tháng là hợp lý cho đồ án.`
 };
 
 // ---- Clean Mermaid Code ----
@@ -455,7 +361,7 @@ function cleanMermaidCode(raw: string): string {
   }
   
   // Remove leading text before diagram keyword
-  const diagramKeywords = ['flowchart', 'sequenceDiagram', 'classDiagram', 'erDiagram', 'stateDiagram', 'gantt'];
+  const diagramKeywords = ['flowchart', 'sequenceDiagram', 'classDiagram'];
   for (const keyword of diagramKeywords) {
     const idx = code.indexOf(keyword);
     if (idx > 0) {
@@ -561,7 +467,7 @@ export async function generateAllDiagrams(
   requirement: string,
   onProgress?: (type: string, status: 'generating' | 'done' | 'error') => void
 ): Promise<Record<string, string>> {
-  const types = ['usecase', 'activity', 'sequence', 'class', 'erd', 'state', 'component', 'deployment', 'dfd', 'gantt'];
+  const types = ['usecase', 'activity', 'sequence', 'class'];
   const results: Record<string, string> = {};
 
   for (const type of types) {
@@ -584,7 +490,7 @@ export async function generateAllAnalyses(
   requirement: string,
   onProgress?: (type: string, status: 'generating' | 'done' | 'error') => void
 ): Promise<Record<string, string>> {
-  const types = ['usecase', 'activity', 'sequence', 'class', 'erd', 'state', 'component', 'deployment', 'dfd', 'gantt'];
+  const types = ['usecase', 'activity', 'sequence', 'class'];
   const results: Record<string, string> = {};
 
   for (const type of types) {
