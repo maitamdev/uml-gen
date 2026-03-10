@@ -1158,3 +1158,101 @@ export const templates: Record<string, Template> = {
   KhachHang "1" --> "*" HoaDon : có
   HoaDon "*" --> "*" DichVu : gồm
   LeTan "1" --> "*" HoaDon : tạo`,
+
+      erd: `erDiagram
+  KHACH_HANG {
+    string ma_kh PK
+    string ho_ten
+    string cmnd
+    string sdt
+    string email
+  }
+  
+  PHONG {
+    string ma_phong PK
+    string loai_phong
+    float gia
+    int tang
+    string trang_thai
+  }
+  
+  DAT_PHONG {
+    string ma_dat PK
+    string ma_kh FK
+    string ma_phong FK
+    date ngay_nhan
+    date ngay_tra
+    string trang_thai
+    float tong_tien
+  }
+  
+  DICH_VU {
+    string ma_dv PK
+    string ten_dv
+    float gia
+  }
+  
+  SU_DUNG_DV {
+    string ma_dat FK
+    string ma_dv FK
+    int so_luong
+    date ngay_sd
+  }
+  
+  HOA_DON {
+    string ma_hd PK
+    string ma_dat FK
+    string ma_nv FK
+    date ngay_lap
+    float tong_tien
+  }
+  
+  NHAN_VIEN {
+    string ma_nv PK
+    string ho_ten
+    string vai_tro
+  }
+  
+  KHACH_HANG ||--o{ DAT_PHONG : "đặt"
+  PHONG ||--o{ DAT_PHONG : "được đặt"
+  DAT_PHONG ||--o{ SU_DUNG_DV : "sử dụng"
+  DICH_VU ||--o{ SU_DUNG_DV : "được dùng"
+  DAT_PHONG ||--|| HOA_DON : "có"
+  NHAN_VIEN ||--o{ HOA_DON : "lập"`,
+
+      state: `stateDiagram-v2
+  [*] --> Trong: Phòng trống
+  
+  Trong --> DaDat: KH đặt phòng
+  DaDat --> DaCheckIn: Check-in
+  DaDat --> DaHuy: KH hủy
+  DaHuy --> Trong: Mở lại
+  DaCheckIn --> DangO: KH ở
+  DangO --> DangDonDep: Check-out
+  DangDonDep --> Trong: Dọn xong
+  DangO --> [*]
+  
+  state DangO {
+    [*] --> BinhThuong
+    BinhThuong --> CoYeuCauDV: Đặt dịch vụ
+    CoYeuCauDV --> BinhThuong: Phục vụ xong
+  }`,
+    },
+  },
+};
+
+export function getTemplate(key: string): Template | null {
+  return templates[key] || null;
+}
+
+export function getTemplateList(): Array<{
+  key: string;
+  name: string;
+  description: string;
+}> {
+  return Object.entries(templates).map(([key, tpl]) => ({
+    key,
+    name: tpl.name,
+    description: tpl.description,
+  }));
+}
