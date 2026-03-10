@@ -883,7 +883,7 @@ body {
   box-shadow: 0 6px 24px rgba(99,102,241,0.4);
 }
 
-.btn-primary:active { transform: translateY(0); }
+.btn-primary:active { transform: translateY(0) scale(0.97); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
 .btn-generate {
@@ -1094,15 +1094,21 @@ body {
   font-family: inherit; font-size: 0.82rem; font-weight: 500;
   cursor: pointer;
   border-radius: var(--radius-sm);
-  transition: all 0.2s var(--ease);
+  transition: all 0.3s var(--ease);
   white-space: nowrap;
   flex: 1; justify-content: center;
+  position: relative;
 }
 
 .tab:hover {
   color: var(--text-primary);
   background: rgba(99,102,241,0.06);
   border-color: var(--border-subtle);
+  transform: translateY(-1px);
+}
+
+.tab:active {
+  transform: scale(0.97);
 }
 
 .tab.active {
@@ -1110,6 +1116,7 @@ body {
   color: white;
   border-color: transparent;
   box-shadow: 0 2px 12px rgba(99,102,241,0.3);
+  transform: translateY(-1px);
 }
 
 .tab-icon { font-size: 0.95rem; }
