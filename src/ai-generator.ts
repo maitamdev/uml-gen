@@ -228,3 +228,53 @@ Chọn 1 đối tượng chính và giải thích.
 ## 2. Các trạng thái
 | STT | Trạng thái | Mô tả | Trạng thái đầu/cuối? |
 
+## 3. Các chuyển đổi trạng thái
+| Từ trạng thái | Sự kiện/Điều kiện | Đến trạng thái |
+
+## 4. Tổng kết`,
+
+  component: `Phân tích Component Diagram cho hệ thống. Trả về BÀI PHÂN TÍCH:
+
+## 1. Các tầng kiến trúc (Layers)
+## 2. Các component trong mỗi tầng
+## 3. Interface/API giữa các tầng
+## 4. Tổng kết`,
+
+  deployment: `Phân tích Deployment Diagram cho hệ thống. Trả về BÀI PHÂN TÍCH:
+
+## 1. Các node vật lý (Server, Client)
+## 2. Component trên mỗi node
+## 3. Kết nối giữa các node (protocol)
+## 4. Tổng kết`,
+
+  dfd: `Phân tích Data Flow Diagram (DFD) Level 0 cho hệ thống. Trả về BÀI PHÂN TÍCH:
+
+## 1. External Entities (Thực thể bên ngoài)
+## 2. Processes (Tiến trình)
+## 3. Data Stores (Kho dữ liệu)
+## 4. Data Flows (Luồng dữ liệu)
+## 5. Tổng kết`,
+
+  gantt: `Phân tích và lập kế hoạch Gantt Chart cho dự án. Trả về BÀI PHÂN TÍCH:
+
+## 1. Các giai đoạn dự án
+## 2. Công việc trong mỗi giai đoạn
+| Giai đoạn | Công việc | Thời gian | Phụ thuộc |
+## 3. Timeline tổng quan
+## 4. Tổng kết`
+};
+
+const DIAGRAM_PROMPTS: Record<string, string> = {
+  usecase: `Tạo Use Case Diagram bằng Mermaid flowchart LR.
+
+QUY TẮC BỐ CỤC (RẤT QUAN TRỌNG - tuân thủ nghiêm ngặt):
+1. Dùng flowchart LR
+2. Đặt TẤT CẢ các Actor ở BÊN TRÁI, mỗi actor khai báo trên 1 dòng riêng với emoji:
+   A1["👤 Tên Actor 1"]
+   A2["👨‍⚕️ Tên Actor 2"]
+3. Tạo 1 subgraph DUY NHẤT chứa tất cả use case:
+   subgraph SYS["🏥 Tên Hệ Thống"]
+4. Mỗi use case dùng ID ngắn và emoji:
+   UC1["📝 Tên chức năng"]
+5. Nối: A1 --> UC1
+6. GIỚI HẠN: Tối đa 8-10 use case chính, 3-5 actor. KHÔNG liệt kê quá nhiều.
