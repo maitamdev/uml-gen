@@ -1511,25 +1511,46 @@ body {
 }
 
 .toast {
-  background: var(--bg-elevated);
+  position: relative;
+  background: rgba(15,15,30,0.9);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
-  padding: 0.7rem 1.1rem;
+  padding: 0.75rem 1.2rem;
   color: var(--text-primary);
   font-size: 0.82rem;
-  box-shadow: var(--shadow-xl);
-  animation: toast-in 0.35s var(--ease-spring);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  animation: toast-in 0.4s var(--ease-spring);
   display: flex; align-items: center; gap: 0.5rem;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+  min-width: 280px;
+}
+
+/* Progress bar */
+.toast::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 2px;
+  width: 100%;
+  animation: toast-progress 3s linear forwards;
 }
 
 .toast.success { border-left: 3px solid var(--emerald); }
+.toast.success::after { background: var(--emerald); }
 .toast.error { border-left: 3px solid var(--rose); }
+.toast.error::after { background: var(--rose); }
 .toast.info { border-left: 3px solid var(--indigo); }
+.toast.info::after { background: var(--indigo); }
 
 @keyframes toast-in {
   from { transform: translateX(120%) scale(0.9); opacity: 0; }
   to { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+@keyframes toast-progress {
+  from { width: 100%; }
+  to { width: 0%; }
 }
 
 /* ============================================
