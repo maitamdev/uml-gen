@@ -2,7 +2,7 @@
 
 ## Reporting a Vulnerability
 
-Neu ban phat hien lo hong bao mat, vui long gui email den maitamdev@gmail.com
+nếu bạn phát hiện lỗi bảo mật hãy liên hệ đến maitamit062005@gmail.com  
 
 ## API Keys
 
