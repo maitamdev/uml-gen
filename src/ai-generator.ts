@@ -538,3 +538,33 @@ export async function generateAnalysis(
     body: JSON.stringify({
       model: config.model,
       messages: [
+        { role: 'system', content: ANALYSIS_SYSTEM_PROMPT },
+        { role: 'user', content: `${analysisPrompt}\n\nĐề tài: ${requirement}` },
+      ],
+      temperature: 0.3,
+      max_tokens: 4096,
+    }),
+  });
+
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    const errMsg = (errData as any)?.error?.message || response.statusText;
+    throw new Error(`${config.name} API error: ${errMsg}`);
+  }
+
+  const data = await response.json();
+  return (data as any).choices?.[0]?.message?.content || '';
+}
+
+// ---- Generate All Diagrams ----
+export async function generateAllDiagrams(
+  requirement: string,
+  onProgress?: (type: string, status: 'generating' | 'done' | 'error') => void
+): Promise<Record<string, string>> {
+  const types = ['usecase', 'activity', 'sequence', 'class', 'erd', 'state', 'component', 'deployment', 'dfd', 'gantt'];
+  const results: Record<string, string> = {};
+
+  for (const type of types) {
+    try {
+      onProgress?.(type, 'generating');
+      results[type] = await generateDiagram(requirement, type);
