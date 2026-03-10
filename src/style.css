@@ -1238,3 +1238,63 @@ body {
 /* ============================================
    CODE PANEL
    ============================================ */
+
+.code-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.code-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.code-header:hover { background: rgba(99,102,241,0.04); }
+
+.code-title-group {
+  display: flex; align-items: center; gap: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.code-title {
+  font-size: 0.85rem; font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.btn-toggle {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  font-size: 0.75rem;
+}
+
+.code-content {
+  border-top: 1px solid var(--border-subtle);
+  max-height: 300px;
+  overflow: auto;
+  background: rgba(5,5,15,0.4);
+}
+
+.code-content pre { padding: 1rem; margin: 0; }
+
+.code-content code {
+  font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", monospace;
+  font-size: 0.8rem;
+  color: var(--purple);
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-muted);
