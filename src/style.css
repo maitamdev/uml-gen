@@ -1635,6 +1635,10 @@ body {
   .hero-title { font-size: 1.6rem; }
   .hero-br { display: block; }
   .hero-subtitle { font-size: 0.9rem; }
+  .hero::before { display: none; }
+  .hero::after { display: none; }
+
+  .setup-arrow { font-size: 0.7rem; padding: 0.35rem 0.8rem; }
 
   .steps-row { gap: 0.3rem; padding: 0.4rem 0.5rem; }
   .step-pill { padding: 0.3rem 0.5rem; }
@@ -1650,13 +1654,17 @@ body {
   .feature-icon { font-size: 1.2rem; }
 
   .tab-label { display: none; }
-  .tab { padding: 0.55rem 0.7rem; }
+  .tab { padding: 0.55rem 0.7rem; min-height: 44px; }
   .tab-icon { font-size: 1.1rem; }
 
   .toolbar-actions { flex-wrap: wrap; }
+  .zoom-slider { display: none; }
+  .zoom-label { display: none; }
   .diagram-viewport { min-height: 300px; padding: 1rem; }
 
-  .btn-generate { width: 100%; justify-content: center; }
+  .btn-generate { width: 100%; justify-content: center; min-height: 48px; font-size: 1rem; }
+  .btn { min-height: 40px; }
+  .btn-tool { min-width: 40px; min-height: 40px; }
 
   .output-split-layout {
     grid-template-columns: 1fr;
@@ -1665,6 +1673,9 @@ body {
   .analysis-panel {
     max-height: 40vh;
   }
+
+  .toast-container { left: 1rem; right: 1rem; bottom: 1rem; }
+  .toast { min-width: auto; }
 }
 
 @media (max-width: 480px) {
@@ -1676,4 +1687,7 @@ body {
 
   .steps-row { flex-wrap: wrap; justify-content: center; }
   .step-arrow { display: none; }
+
+  .hero-title { font-size: 1.35rem; }
+  .setup-arrow { font-size: 0.65rem; }
 }
