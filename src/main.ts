@@ -518,3 +518,48 @@ async function generateAnalysisForTab(type: string, requirement: string) {
     return;
   }
 
+  showAnalysisLoading();
+
+  try {
+    const result = await generateAnalysis(requirement, type);
+    if (result) {
+      currentAnalyses[type] = result;
+      // Only render if still on same tab
+      if (currentType === type) {
+        renderAnalysis(result);
+      }
+    } else {
+      if (currentType === type) {
+        analysisContent.innerHTML = `
+          <div class="analysis-placeholder">
+            <div class="placeholder-icon">📝</div>
+            <div>Không có phân tích cho loại sơ đồ này</div>
+          </div>
+        `;
+      }
+    }
+  } catch (error) {
+    console.error(`Error generating analysis for ${type}:`, error);
+    if (currentType === type) {
+      analysisContent.innerHTML = `
+        <div class="analysis-placeholder">
+          <div class="placeholder-icon">⚠️</div>
+          <div>Lỗi khi tạo phân tích</div>
+        </div>
+      `;
+    }
+  }
+}
+
+async function handleCopyAnalysis() {
+  const analysisText = currentAnalyses[currentType];
+  if (!analysisText) {
+    showToast('⚠️ Chưa có bài phân tích để copy', 'error');
+    return;
+  }
+  const success = await copyToClipboard(analysisText);
+  showToast(
+    success ? '📋 Đã copy bài phân tích!' : '❌ Không thể copy',
+    success ? 'success' : 'error'
+  );
+}
