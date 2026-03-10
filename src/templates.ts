@@ -438,3 +438,113 @@ export const templates: Record<string, Template> = {
   SINH_VIEN {
     string ma_sv PK
     string ho_ten
+    date ngay_sinh
+    string gioi_tinh
+    string email
+    string lop
+  }
+  
+  MON_HOC {
+    string ma_mon PK
+    string ten_mon
+    int so_tin_chi
+    string mo_ta
+  }
+  
+  LOP_HOC {
+    string ma_lop PK
+    string ma_mon FK
+    string ma_gv FK
+    int si_so_max
+    string phong
+    string lich_hoc
+  }
+  
+  GIANG_VIEN {
+    string ma_gv PK
+    string ho_ten
+    string hoc_vi
+    string chuyen_nganh
+  }
+  
+  DANG_KY {
+    string ma_sv FK
+    string ma_lop FK
+    date ngay_dk
+    string trang_thai
+  }
+  
+  DIEM {
+    string ma_sv FK
+    string ma_mon FK
+    float diem_gk
+    float diem_ck
+    float diem_tb
+  }
+  
+  SINH_VIEN ||--o{ DANG_KY : "đăng ký"
+  LOP_HOC ||--o{ DANG_KY : "có"
+  MON_HOC ||--o{ LOP_HOC : "mở"
+  GIANG_VIEN ||--o{ LOP_HOC : "dạy"
+  SINH_VIEN ||--o{ DIEM : "có"
+  MON_HOC ||--o{ DIEM : "thuộc"`,
+
+      state: `stateDiagram-v2
+  [*] --> ChuaDangKy
+  
+  ChuaDangKy --> DaDangKy: SV đăng ký
+  DaDangKy --> DaXacNhan: PĐT duyệt
+  DaDangKy --> DaHuy: SV hủy đăng ký
+  DaXacNhan --> DangHoc: Bắt đầu học kỳ
+  DangHoc --> DaThi: Kết thúc môn
+  DaThi --> DatMon: Điểm >= 4.0
+  DaThi --> RotMon: Điểm < 4.0
+  RotMon --> ChuaDangKy: Đăng ký lại
+  DatMon --> [*]
+  DaHuy --> ChuaDangKy: Đăng ký lại
+  
+  state DangHoc {
+    [*] --> DiemDanh
+    DiemDanh --> ThiGiuaKy
+    ThiGiuaKy --> HocTiep
+    HocTiep --> ThiCuoiKy
+  }`,
+    },
+  },
+
+  ecommerce: {
+    name: "Bán hàng online",
+    description:
+      "Hệ thống bán hàng trực tuyến cho phép khách hàng duyệt sản phẩm, đặt hàng, thanh toán",
+    diagrams: {
+      usecase: `flowchart LR
+  subgraph HệThống["🛒 HỆ THỐNG BÁN HÀNG ONLINE"]
+    UC1["🔍 Tìm kiếm sản phẩm"]
+    UC2["🛍️ Thêm vào giỏ hàng"]
+    UC3["💳 Thanh toán"]
+    UC4["📦 Theo dõi đơn hàng"]
+    UC5["⭐ Đánh giá sản phẩm"]
+    UC6["📋 Quản lý sản phẩm"]
+    UC7["📊 Quản lý đơn hàng"]
+    UC8["📈 Thống kê doanh thu"]
+    UC9["🔐 Đăng nhập/Đăng ký"]
+    UC10["🚚 Xử lý giao hàng"]
+  end
+  
+  KH["🧑 Khách hàng"]
+  NV["👩‍💼 Nhân viên"]
+  QTV["🧑‍💻 Quản trị viên"]
+  TT["🏦 Cổng thanh toán"]
+  
+  KH --> UC9
+  KH --> UC1
+  KH --> UC2
+  KH --> UC3
+  KH --> UC4
+  KH --> UC5
+  
+  NV --> UC9
+  NV --> UC7
+  NV --> UC10
+  
+  QTV --> UC9
