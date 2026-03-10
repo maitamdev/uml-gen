@@ -43,3 +43,43 @@ const PROVIDER_STORAGE_KEY = 'uml-gen-provider';
 export function getApiKey(): string {
   return localStorage.getItem(STORAGE_KEY) || '';
 }
+
+export function setApiKey(key: string): void {
+  localStorage.setItem(STORAGE_KEY, key.trim());
+}
+
+export function getProvider(): ProviderType {
+  return (localStorage.getItem(PROVIDER_STORAGE_KEY) as ProviderType) || 'huggingface';
+}
+
+export function setProvider(provider: ProviderType): void {
+  localStorage.setItem(PROVIDER_STORAGE_KEY, provider);
+}
+
+export function getProviderConfig(): ProviderConfig {
+  return PROVIDERS[getProvider()];
+}
+
+export async function checkProviderStatus(): Promise<boolean> {
+  const apiKey = getApiKey();
+  if (!apiKey) return false;
+  
+  const config = getProviderConfig();
+  
+  try {
+    const response = await fetch(config.modelsUrl, {
+      headers: { 'Authorization': `Bearer ${apiKey}` },
+      signal: AbortSignal.timeout(5000),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+
+// ---- Prompts ----
+const SYSTEM_PROMPT = `Bạn là chuyên gia phân tích và thiết kế hệ thống phần mềm UML.
+
+QUY TẮC TUYỆT ĐỐI PHẢI TUÂN THỦ:
+1. CHỈ trả về code Mermaid thuần túy. KHÔNG giải thích, KHÔNG markdown, KHÔNG \`\`\`, KHÔNG text nào khác.
