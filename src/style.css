@@ -1346,6 +1346,48 @@ body {
   display: flex; align-items: center; gap: 0.25rem;
 }
 
+/* Zoom Slider */
+.zoom-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 80px; height: 4px;
+  background: rgba(99,102,241,0.15);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  margin: 0 0.25rem;
+  transition: background 0.2s;
+}
+.zoom-slider:hover { background: rgba(99,102,241,0.25); }
+.zoom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  background: var(--indigo);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(99,102,241,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.zoom-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 10px rgba(99,102,241,0.6);
+}
+.zoom-slider::-moz-range-thumb {
+  width: 14px; height: 14px;
+  background: var(--indigo);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.zoom-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 36px;
+  text-align: center;
+  font-family: "JetBrains Mono", monospace;
+}
+
 .toolbar-divider {
   width: 1px; height: 20px;
   background: var(--border-subtle);

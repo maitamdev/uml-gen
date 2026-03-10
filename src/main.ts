@@ -254,8 +254,17 @@ function setupEventListeners() {
   $('#zoomOutBtn').addEventListener('click', () => adjustZoom(-0.2));
   $('#resetZoomBtn').addEventListener('click', () => {
     zoomLevel = 1;
-    diagramContainer.style.transform = `scale(1)`;
+    updateZoomUI();
   });
+
+  // Zoom slider
+  const zoomSlider = document.getElementById('zoomSlider') as HTMLInputElement;
+  if (zoomSlider) {
+    zoomSlider.addEventListener('input', () => {
+      zoomLevel = parseInt(zoomSlider.value) / 100;
+      updateZoomUI();
+    });
+  }
 
   // Fullscreen toggle
   $('#fullscreenBtn').addEventListener('click', toggleFullscreen);
@@ -472,8 +481,16 @@ function setLoading(loading: boolean) {
 }
 
 function adjustZoom(delta: number) {
-  zoomLevel = Math.max(0.3, Math.min(3, zoomLevel + delta));
+  zoomLevel = Math.max(0.25, Math.min(2, zoomLevel + delta));
+  updateZoomUI();
+}
+
+function updateZoomUI() {
   diagramContainer.style.transform = `scale(${zoomLevel})`;
+  const slider = document.getElementById('zoomSlider') as HTMLInputElement;
+  const label = document.getElementById('zoomLabel');
+  if (slider) slider.value = String(Math.round(zoomLevel * 100));
+  if (label) label.textContent = `${Math.round(zoomLevel * 100)}%`;
 }
 
 function toggleCodePanel() {
