@@ -338,3 +338,103 @@ export const templates: Record<string, Template> = {
   Register --> Confirm
   Confirm --> SaveDB
   SaveDB --> ShowResult
+  ShowResult --> End
+  Reject --> End`,
+
+      sequence: `sequenceDiagram
+  actor SV as 🧑‍🎓 Sinh viên
+  participant HT as 🖥️ Hệ thống
+  participant DB as 🗄️ CSDL
+  actor GV as 👨‍🏫 Giảng viên
+  
+  SV->>HT: Đăng nhập
+  HT->>DB: Xác thực
+  DB-->>HT: OK
+  HT-->>SV: Thành công
+  
+  SV->>HT: Xem danh sách môn học mở
+  HT->>DB: Truy vấn môn học
+  DB-->>HT: Danh sách môn
+  HT-->>SV: Hiển thị môn học
+  
+  SV->>HT: Chọn môn đăng ký
+  HT->>DB: Kiểm tra tiên quyết
+  DB-->>HT: Đủ điều kiện
+  HT->>DB: Kiểm tra sĩ số
+  DB-->>HT: Còn chỗ
+  HT->>DB: Lưu đăng ký
+  DB-->>HT: Thành công
+  HT-->>SV: Xác nhận đăng ký
+  
+  Note over GV,DB: Cuối kỳ - Nhập điểm
+  GV->>HT: Nhập điểm sinh viên
+  HT->>DB: Lưu điểm
+  DB-->>HT: OK
+  HT-->>SV: Thông báo có điểm mới`,
+
+      class: `classDiagram
+  class SinhVien {
+    -maSV: String
+    -hoTen: String
+    -ngaySinh: Date
+    -gioiTinh: String
+    -diaChi: String
+    -email: String
+    +dangKyMon()
+    +xemDiem()
+    +xemTKB()
+  }
+  
+  class MonHoc {
+    -maMon: String
+    -tenMon: String
+    -soTinChi: int
+    -moTa: String
+    +kiemTraTienQuyet()
+  }
+  
+  class LopHoc {
+    -maLop: String
+    -tenLop: String
+    -siSoToiDa: int
+    -phongHoc: String
+    -lichHoc: String
+    +kiemTraConCho()
+  }
+  
+  class GiangVien {
+    -maGV: String
+    -hoTen: String
+    -hocVi: String
+    -chuyenNganh: String
+    +nhapDiem()
+    +xemDanhSachLop()
+  }
+  
+  class DangKy {
+    -maDK: String
+    -ngayDK: Date
+    -trangThai: String
+    +xacNhan()
+    +huy()
+  }
+  
+  class Diem {
+    -maDiem: String
+    -diemGK: float
+    -diemCK: float
+    -diemTB: float
+    +tinhDiemTB()
+  }
+  
+  SinhVien "1" --> "*" DangKy : tạo
+  DangKy "*" --> "1" LopHoc : thuộc
+  LopHoc "*" --> "1" MonHoc : của
+  GiangVien "1" --> "*" LopHoc : phụ trách
+  SinhVien "1" --> "*" Diem : có
+  Diem "*" --> "1" MonHoc : thuộc`,
+
+      erd: `erDiagram
+  SINH_VIEN {
+    string ma_sv PK
+    string ho_ten
