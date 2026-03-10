@@ -467,6 +467,7 @@ body {
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--indigo);
+  text-decoration: none;
   margin-bottom: 1.25rem;
   animation: hero-fade-in 0.6s ease, arrow-bounce 2s ease-in-out infinite;
   cursor: pointer;
