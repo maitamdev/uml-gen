@@ -133,3 +133,53 @@
             <div class="template-dropdown">
               <button class="btn btn-template" id="templateBtn">
                 <span class="template-icon">📋</span>
+                <span>Đề mẫu</span>
+                <svg class="chevron" width="12" height="12" viewBox="0 0 12 12">
+                  <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                </svg>
+              </button>
+              <div class="dropdown-menu" id="templateMenu">
+                <div class="dropdown-header">Chọn đề mẫu</div>
+                <button class="dropdown-item" data-template="library">
+                  <span class="item-emoji">📚</span>
+                  <div class="item-info">
+                    <span class="item-name">Quản lý thư viện</span>
+                    <span class="item-desc">Mượn/trả sách, quản lý thẻ</span>
+                  </div>
+                </button>
+                <button class="dropdown-item" data-template="student">
+                  <span class="item-emoji">🎓</span>
+                  <div class="item-info">
+                    <span class="item-name">Quản lý sinh viên</span>
+                    <span class="item-desc">Điểm, môn học, lớp</span>
+                  </div>
+                </button>
+                <button class="dropdown-item" data-template="ecommerce">
+                  <span class="item-emoji">🛒</span>
+                  <div class="item-info">
+                    <span class="item-name">Bán hàng online</span>
+                    <span class="item-desc">Sản phẩm, đơn hàng</span>
+                  </div>
+                </button>
+                <button class="dropdown-item" data-template="cinema">
+                  <span class="item-emoji">🎬</span>
+                  <div class="item-info">
+                    <span class="item-name">Đặt vé xem phim</span>
+                    <span class="item-desc">Lịch chiếu, ghế ngồi</span>
+                  </div>
+                </button>
+                <button class="dropdown-item" data-template="hotel">
+                  <span class="item-emoji">🏨</span>
+                  <div class="item-info">
+                    <span class="item-name">Quản lý khách sạn</span>
+                    <span class="item-desc">Phòng, check-in/out</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="textarea-wrapper">
+            <textarea
+              id="requirementInput"
+              class="requirement-textarea"
+              placeholder="Ví dụ: Hệ thống quản lý thư viện cho phép sinh viên mượn/trả sách, thủ thư quản lý sách và thẻ thư viện, quản trị viên quản lý tài khoản và thống kê..."
