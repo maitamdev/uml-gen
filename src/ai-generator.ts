@@ -338,3 +338,63 @@ QUY TẮC:
 2. Mỗi entity có 3-5 thuộc tính chính:
    BENH_NHAN {
      int ma_bn PK
+     string ho_ten
+     date ngay_sinh
+     string sdt
+   }
+3. Quan hệ phải có label mô tả:
+   BENH_NHAN ||--o{ PHIEU_KHAM : "đặt lịch"
+   BAC_SI ||--o{ PHIEU_KHAM : "khám cho"
+4. Kiểu quan hệ:
+   ||--o{  một-nhiều
+   ||--||  một-một
+   }|--|{  nhiều-nhiều
+5. GIỚI HẠN: Tối đa 6-8 entity.
+6. Tên entity dùng UPPER_SNAKE_CASE không dấu: BENH_NHAN, BAC_SI, HOA_DON
+7. Tên thuộc tính dùng lower_snake_case không dấu.`,
+
+  state: `Tạo State Diagram bằng Mermaid stateDiagram-v2 cho ĐỐI TƯỢNG CHÍNH trong hệ thống.
+
+QUY TẮC:
+1. Dùng stateDiagram-v2
+2. Bắt đầu: [*] --> TrangThai1
+3. Kết thúc: TrangThaiCuoi --> [*]
+4. Chuyển đổi: TrangThai1 --> TrangThai2 : Hành động
+5. GIỚI HẠN: Tối đa 6-8 trạng thái.
+6. Chọn 1 đối tượng cụ thể (ví dụ: trạng thái Đơn hàng, trạng thái Phiếu khám...).
+7. Tên trạng thái ngắn gọn, không dấu: ChoKham, DangKham, HoanTat...
+8. Có thể dùng state lồng nhau nếu cần nhưng tối đa 1 cấp.
+9. Dùng note right of để ghi chú nếu cần.`,
+
+  component: `Tạo Component Diagram bằng Mermaid flowchart TB thể hiện kiến trúc hệ thống.
+
+QUY TẮC:
+1. Dùng flowchart TB
+2. Mỗi nhóm component dùng subgraph:
+   subgraph UI["🖥️ Presentation Layer"]
+     C1["📱 Web App"]
+     C2["📲 Mobile App"]
+   end
+3. Các layer phổ biến: Presentation, Business Logic, Data Access, Database
+4. Dùng mũi tên chỉ dependency: C1 --> C3
+5. Mũi tên có label mô tả: C1 -->|"REST API"| C3
+6. GIỚI HẠN: Tối đa 3-4 layer, mỗi layer 2-4 component.
+7. Tên component ngắn gọn, dùng emoji phân biệt layer.
+8. Thể hiện rõ các interface/API giữa các layer.`,
+
+  deployment: `Tạo Deployment Diagram bằng Mermaid flowchart LR thể hiện cấu trúc triển khai.
+
+QUY TẮC:
+1. Dùng flowchart LR
+2. Mỗi node vật lý (server, máy client) dùng subgraph:
+   subgraph Server["🖥️ Web Server"]
+     S1["🌐 Nginx"]
+     S2["⚙️ Node.js App"]
+   end
+   subgraph DB["🗄️ Database Server"]
+     D1["💾 MySQL"]
+   end
+3. Nối các node: S2 -->|"TCP 3306"| D1
+4. Thêm Client:
+   CL["💻 Client Browser"] -->|"HTTPS"| S1
+5. GIỚI HẠN: Tối đa 3-4 máy/server, mỗi máy 1-3 component.
