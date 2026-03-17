@@ -8,7 +8,6 @@ import { checkProviderStatus, generateAllDiagrams, generateAnalysis, getApiKey, 
 import type { ProviderType } from './ai-generator';
 import { templates, getTemplate } from './templates';
 import { exportSvg, exportPng, copyToClipboard } from './export';
-import { convertToDrawio } from './drawio-export';
 import { marked } from 'marked';
 import type { DiagramSet } from './templates';
 
@@ -238,7 +237,8 @@ function setupEventListeners() {
   $('#copyCodeBtn').addEventListener('click', handleCopyCode);
   $('#exportSvgBtn').addEventListener('click', handleExportSvg);
   $('#exportPngBtn').addEventListener('click', handleExportPng);
-  $('#exportDrawioBtn').addEventListener('click', handleExportDrawio);
+  $('#exportPdfBtn').addEventListener('click', handleExportPdf);
+  $('#copyImageBtn').addEventListener('click', handleCopyImage);
   $('#copyAnalysisBtn').addEventListener('click', handleCopyAnalysis);
 
   // Editable Mermaid code - Update Diagram button
@@ -657,29 +657,148 @@ function hideCodeError() {
   }
 }
 
-// ---- Export to Draw.io ----
-function handleExportDrawio() {
-  if (!currentMermaidCode) {
-    showToast('⚠️ Chưa có diagram để export', 'error');
+// ---- Export PDF ----
+function handleExportPdf() {
+  const svgElement = diagramContainer.querySelector('svg');
+  if (!svgElement) {
+    showToast('⚠️ Chưa có diagram để xuất PDF', 'error');
     return;
   }
 
-  // Convert Mermaid code to native draw.io XML shapes
-  const svgElement = diagramContainer.querySelector('svg') as SVGSVGElement | null;
-  const drawioXml = convertToDrawio(currentMermaidCode, currentType, svgElement);
+  // Clone SVG and set white background for printing
+  const clone = svgElement.cloneNode(true) as SVGSVGElement;
+  const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  bgRect.setAttribute('width', '100%');
+  bgRect.setAttribute('height', '100%');
+  bgRect.setAttribute('fill', 'white');
+  clone.insertBefore(bgRect, clone.firstChild);
 
-  // Download as .drawio file
-  const blob = new Blob([drawioXml], { type: 'application/xml' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `uml_${currentType || 'diagram'}.drawio`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  // Make text/strokes darker for print
+  clone.querySelectorAll('text').forEach(t => {
+    const fill = t.getAttribute('fill');
+    if (fill && (fill.includes('#e8e8f0') || fill.includes('#a0a0c0'))) {
+      t.setAttribute('fill', '#333333');
+    }
+  });
 
-  showToast('📥 Đã tải file .drawio! Mở file bằng app.diagrams.net', 'success');
+  const svgData = new XMLSerializer().serializeToString(clone);
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+  const svgUrl = URL.createObjectURL(svgBlob);
+
+  // Open print window with SVG
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    showToast('❌ Trình duyệt chặn popup! Hãy cho phép popup', 'error');
+    URL.revokeObjectURL(svgUrl);
+    return;
+  }
+
+  const diagramName = currentType === 'usecase' ? 'Use Case' :
+    currentType === 'activity' ? 'Activity' :
+    currentType === 'sequence' ? 'Sequence' :
+    currentType === 'class' ? 'Class' : 'UML';
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${diagramName} Diagram - UML Generator</title>
+      <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; background: white; padding: 20px; }
+        img { max-width: 100%; height: auto; }
+        h2 { text-align: center; margin-bottom: 16px; font-family: Arial, sans-serif; color: #333; }
+        .container { text-align: center; }
+        @media print {
+          body { padding: 0; }
+          h2 { font-size: 14pt; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h2>${diagramName} Diagram</h2>
+        <img src="${svgUrl}" alt="${diagramName} Diagram" />
+      </div>
+      <script>
+        window.onload = function() {
+          setTimeout(function() { window.print(); }, 300);
+        };
+      <\/script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
+
+  showToast('📄 Đang mở hộp thoại in PDF...', 'success');
+}
+
+// ---- Copy Image to Clipboard ----
+async function handleCopyImage() {
+  const svgElement = diagramContainer.querySelector('svg');
+  if (!svgElement) {
+    showToast('⚠️ Chưa có diagram để copy', 'error');
+    return;
+  }
+
+  try {
+    // Clone SVG with white background
+    const clone = svgElement.cloneNode(true) as SVGSVGElement;
+    const bgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    bgRect.setAttribute('width', '100%');
+    bgRect.setAttribute('height', '100%');
+    bgRect.setAttribute('fill', 'white');
+    clone.insertBefore(bgRect, clone.firstChild);
+
+    // Make text darker
+    clone.querySelectorAll('text').forEach(t => {
+      const fill = t.getAttribute('fill');
+      if (fill && (fill.includes('#e8e8f0') || fill.includes('#a0a0c0'))) {
+        t.setAttribute('fill', '#333333');
+      }
+    });
+
+    const svgData = new XMLSerializer().serializeToString(clone);
+    const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+    const svgUrl = URL.createObjectURL(svgBlob);
+
+    // Convert SVG to PNG via Canvas
+    const img = new Image();
+    img.onload = async () => {
+      const scale = 2; // High DPI
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth * scale;
+      canvas.height = img.naturalHeight * scale;
+      const ctx = canvas.getContext('2d')!;
+      ctx.scale(scale, scale);
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(svgUrl);
+
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          showToast('❌ Không thể tạo hình ảnh', 'error');
+          return;
+        }
+        try {
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          showToast('🖼️ Đã copy hình! Paste vào Word/PPT bằng Ctrl+V', 'success');
+        } catch {
+          showToast('❌ Trình duyệt không hỗ trợ copy hình', 'error');
+        }
+      }, 'image/png');
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(svgUrl);
+      showToast('❌ Lỗi khi xử lý hình ảnh', 'error');
+    };
+    img.src = svgUrl;
+  } catch {
+    showToast('❌ Lỗi khi copy hình', 'error');
+  }
 }
 
 // ---- Export Handlers ----
