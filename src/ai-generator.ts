@@ -578,25 +578,41 @@ function cleanMermaidCode(raw: string, diagramType?: string): string {
   
   // ---- Post-process Use Case: force LR and limit connections ----
   if (diagramType === 'usecase') {
-    // Force flowchart LR instead of flowchart TD/TB
-    code = code.replace(/^flowchart\s+(TD|TB)/i, 'flowchart LR');
+    // Force flowchart LR instead of flowchart TD/TB (handle any whitespace)
+    code = code.replace(/flowchart\s+(TD|TB|RL)/gi, 'flowchart LR');
     
-    // Limit each actor to max 3 connections
-    const lines = code.split('\n');
-    const actorConnectionCount: Record<string, number> = {};
+    // Identify actor IDs: lines with ID["text"] that are OUTSIDE subgraph
+    const codeLines = code.split('\n');
+    const actorIds = new Set<string>();
+    let insideSubgraph = false;
+    
+    for (const ln of codeLines) {
+      const trimmed = ln.trim();
+      if (trimmed.match(/^subgraph\s/)) { insideSubgraph = true; continue; }
+      if (trimmed === 'end') { insideSubgraph = false; continue; }
+      if (!insideSubgraph) {
+        // Actor declaration: ID["text"] (not inside subgraph)
+        const actorDecl = trimmed.match(/^(\w+)\s*\["/);
+        if (actorDecl) actorIds.add(actorDecl[1]);
+      }
+    }
+    
+    // Limit each ACTOR to max 3 connections
+    const actorConnCount: Record<string, number> = {};
     const filteredLines: string[] = [];
     
-    for (const line of lines) {
-      // Match actor --> UC connections (e.g. A1 --> UC3)
-      const connMatch = line.trim().match(/^(A\d+)\s*-->/); 
-      if (connMatch) {
+    for (const ln of codeLines) {
+      const trimmed = ln.trim();
+      // Match: ACTOR_ID --> TARGET
+      const connMatch = trimmed.match(/^(\w+)\s*-->/);
+      if (connMatch && actorIds.has(connMatch[1])) {
         const actor = connMatch[1];
-        actorConnectionCount[actor] = (actorConnectionCount[actor] || 0) + 1;
-        if (actorConnectionCount[actor] > 3) {
+        actorConnCount[actor] = (actorConnCount[actor] || 0) + 1;
+        if (actorConnCount[actor] > 3) {
           continue; // Skip excess connections
         }
       }
-      filteredLines.push(line);
+      filteredLines.push(ln);
     }
     code = filteredLines.join('\n');
   }
