@@ -8,6 +8,7 @@ import { checkProviderStatus, generateAllDiagrams, generateAnalysis, getApiKey, 
 import type { ProviderType } from './ai-generator';
 import { templates, getTemplate } from './templates';
 import { exportSvg, exportPng, copyToClipboard } from './export';
+import { enableDragDrop } from './diagram-interactive';
 import { marked } from 'marked';
 import type { DiagramSet } from './templates';
 
@@ -438,7 +439,9 @@ function switchTab(type: keyof DiagramSet) {
     mermaidCodeEl.value = code;
     zoomLevel = 1;
     diagramContainer.style.transform = 'scale(1)';
-    renderDiagram(code, diagramContainer);
+    renderDiagram(code, diagramContainer).then(ok => {
+      if (ok) enableDragDrop(diagramContainer);
+    });
     hideCodeError();
   } else {
     currentMermaidCode = '';
@@ -633,6 +636,7 @@ async function handleUpdateDiagram() {
   diagramContainer.style.transform = 'scale(1)';
   const success = await renderDiagram(newCode, diagramContainer);
   if (success) {
+    enableDragDrop(diagramContainer);
     hideCodeError();
     showToast('✅ Đã cập nhật diagram!', 'success');
   } else {
