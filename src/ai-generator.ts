@@ -576,45 +576,157 @@ function cleanMermaidCode(raw: string, diagramType?: string): string {
     }
   }
   
-  // ---- Post-process Use Case: force LR and limit connections ----
+  // ---- Post-process Use Case: force LR, limit UCs, reorder to minimize crossings ----
   if (diagramType === 'usecase') {
-    // Force flowchart LR instead of flowchart TD/TB (handle any whitespace)
+    // Force flowchart LR
     code = code.replace(/flowchart\s+(TD|TB|RL)/gi, 'flowchart LR');
     
-    // Identify actor IDs: lines with ID["text"] that are OUTSIDE subgraph
+    // Parse structure
     const codeLines = code.split('\n');
-    const actorIds = new Set<string>();
-    let insideSubgraph = false;
+    const actorIds: string[] = []; // ordered
+    const actorLines: string[] = []; // actor declaration lines
+    const ucIds: string[] = []; // ordered
+    const ucLines: Map<string, string> = new Map(); // ucId -> line
+    const connections: { actor: string; uc: string; line: string }[] = [];
+    const includeExtend: string[] = []; // UC-to-UC relationships
+    let subgraphLine = '';
+    let headerLine = '';
+    let insideSub = false;
+    const otherLines: string[] = []; // style lines etc.
     
     for (const ln of codeLines) {
-      const trimmed = ln.trim();
-      if (trimmed.match(/^subgraph\s/)) { insideSubgraph = true; continue; }
-      if (trimmed === 'end') { insideSubgraph = false; continue; }
-      if (!insideSubgraph) {
-        // Actor declaration: ID["text"] (not inside subgraph)
-        const actorDecl = trimmed.match(/^(\w+)\s*\["/);
-        if (actorDecl) actorIds.add(actorDecl[1]);
+      const t = ln.trim();
+      if (!t || t.startsWith('%%')) continue;
+      
+      if (t.startsWith('flowchart')) { headerLine = ln; continue; }
+      
+      if (t.match(/^subgraph\s/)) { subgraphLine = ln; insideSub = true; continue; }
+      if (t === 'end') { insideSub = false; continue; }
+      
+      // UC inside subgraph: UC1(["text"]) or UC1["text"]
+      if (insideSub) {
+        const ucMatch = t.match(/^(\w+)/);
+        if (ucMatch) {
+          ucIds.push(ucMatch[1]);
+          ucLines.set(ucMatch[1], ln);
+        }
+        continue;
+      }
+      
+      // Actor declaration outside subgraph
+      const actorDecl = t.match(/^(\w+)\s*\["/);
+      if (actorDecl) {
+        actorIds.push(actorDecl[1]);
+        actorLines.push(ln);
+        continue;
+      }
+      
+      // Actor --> UC connection
+      const connMatch = t.match(/^(\w+)\s*-->\s*(\w+)/);
+      if (connMatch) {
+        connections.push({ actor: connMatch[1], uc: connMatch[2], line: ln });
+        continue;
+      }
+      
+      // UC -.-> UC (include/extend)
+      const ieMatch = t.match(/^(\w+)\s*-\.->.*(\w+)/);
+      if (ieMatch) {
+        includeExtend.push(ln);
+        continue;
+      }
+      
+      // Style or other
+      if (t.startsWith('style ') || t.startsWith('classDef ')) {
+        otherLines.push(ln);
+        continue;
       }
     }
     
-    // Limit each ACTOR to max 3 connections
-    const actorConnCount: Record<string, number> = {};
-    const filteredLines: string[] = [];
+    // ---- HARD CAP: max 5 use cases ----
+    const MAX_UCS = 5;
+    const allowedUcIds = new Set(ucIds.slice(0, MAX_UCS));
     
-    for (const ln of codeLines) {
-      const trimmed = ln.trim();
-      // Match: ACTOR_ID --> TARGET
-      const connMatch = trimmed.match(/^(\w+)\s*-->/);
-      if (connMatch && actorIds.has(connMatch[1])) {
-        const actor = connMatch[1];
-        actorConnCount[actor] = (actorConnCount[actor] || 0) + 1;
-        if (actorConnCount[actor] > 3) {
-          continue; // Skip excess connections
+    // Remove connections to trimmed UCs
+    const validConnections = connections.filter(c => allowedUcIds.has(c.uc));
+    const validIE = includeExtend.filter(ln => {
+      // Check both sides of -.-> reference allowed UCs
+      return [...allowedUcIds].some(id => ln.includes(id));
+    });
+    
+    // ---- REORDER UCs by actor affinity to minimize crossings ----
+    // Build: which actors connect to which UCs
+    const actorToUcs: Map<string, string[]> = new Map();
+    const ucToActors: Map<string, string[]> = new Map();
+    
+    for (const c of validConnections) {
+      if (!actorToUcs.has(c.actor)) actorToUcs.set(c.actor, []);
+      actorToUcs.get(c.actor)!.push(c.uc);
+      if (!ucToActors.has(c.uc)) ucToActors.set(c.uc, []);
+      ucToActors.get(c.uc)!.push(c.actor);
+    }
+    
+    // Sort UCs: Actor1-only UCs first, shared UCs middle, Actor2-only last, Actor3 last
+    const orderedUcIds: string[] = [];
+    const placed = new Set<string>();
+    
+    for (const actor of actorIds) {
+      const thisActorUcs = actorToUcs.get(actor) || [];
+      // Add UCs that belong ONLY to this actor (not shared)
+      for (const uc of thisActorUcs) {
+        if (!placed.has(uc) && allowedUcIds.has(uc)) {
+          const actors = ucToActors.get(uc) || [];
+          if (actors.length === 1) {
+            orderedUcIds.push(uc);
+            placed.add(uc);
+          }
         }
       }
-      filteredLines.push(ln);
+      // Then add shared UCs (connected to this actor + others)
+      for (const uc of thisActorUcs) {
+        if (!placed.has(uc) && allowedUcIds.has(uc)) {
+          orderedUcIds.push(uc);
+          placed.add(uc);
+        }
+      }
     }
-    code = filteredLines.join('\n');
+    // Add any remaining UCs not connected to any actor
+    for (const uc of ucIds) {
+      if (!placed.has(uc) && allowedUcIds.has(uc)) {
+        orderedUcIds.push(uc);
+      }
+    }
+    
+    // ---- LIMIT: max 2 connections per actor ----
+    const MAX_CONN = 2;
+    const actorConnUsed: Record<string, number> = {};
+    const limitedConnections: string[] = [];
+    
+    for (const c of validConnections) {
+      actorConnUsed[c.actor] = (actorConnUsed[c.actor] || 0) + 1;
+      if (actorConnUsed[c.actor] <= MAX_CONN) {
+        limitedConnections.push(c.line);
+      }
+    }
+    
+    // ---- Rebuild code ----
+    const rebuilt: string[] = [headerLine];
+    // Actors first
+    rebuilt.push(...actorLines);
+    // Subgraph with reordered UCs
+    if (subgraphLine) rebuilt.push(subgraphLine);
+    for (const ucId of orderedUcIds) {
+      const ln = ucLines.get(ucId);
+      if (ln) rebuilt.push(ln);
+    }
+    if (subgraphLine) rebuilt.push('  end');
+    // Connections (ordered by actor)
+    rebuilt.push(...limitedConnections);
+    // Include/extend
+    rebuilt.push(...validIE);
+    // Styles
+    rebuilt.push(...otherLines);
+    
+    code = rebuilt.join('\n');
   }
   
   return code;
