@@ -346,43 +346,73 @@ Chọn 1 đối tượng chính và giải thích.
 const DIAGRAM_PROMPTS: Record<string, string> = {
   usecase: `Tạo Use Case Diagram bằng cú pháp Mermaid flowchart.
 
-⛔ TUYỆT ĐỐI KHÔNG dùng "useCaseDiagram" — Mermaid KHÔNG hỗ trợ cú pháp này!
-✅ PHẢI dùng "flowchart LR" để vẽ Use Case Diagram.
+⛔ TUYỆT ĐỐI KHÔNG dùng "useCaseDiagram" — Mermaid KHÔNG hỗ trợ!
+✅ PHẢI dùng "flowchart LR"
 
-QUY TẮC BỐ CỤC (RẤT QUAN TRỌNG - tuân thủ nghiêm ngặt):
-1. Dòng đầu tiên PHẢI là: flowchart LR
-2. Đặt TẤT CẢ các Actor ở BÊN TRÁI, mỗi actor khai báo trên 1 dòng riêng với emoji:
-   A1["👤 Tên Actor 1"]
-   A2["👨‍⚕️ Tên Actor 2"]
-3. Tạo 1 subgraph DUY NHẤT chứa tất cả use case:
+🔴 NGUYÊN TẮC CHỐNG RỐI (QUAN TRỌNG NHẤT):
+- Mỗi actor CHỈ nối tối đa 2-3 use case. TUYỆT ĐỐI KHÔNG nối 1 actor vào 4+ use case.
+- Nếu 1 actor có nhiều chức năng, NHÓM thành 1 use case lớn (VD: "Quản lý sách" thay vì tách "Thêm sách", "Sửa sách", "Xóa sách").
+- SẮP XẾP use case theo THỨ TỰ actor: UC của Actor 1 ở trên, Actor 2 ở giữa, Actor 3 ở dưới.
+- Tối đa 5-6 use case, 2-3 actor. ÍT HƠN = ĐẸP HƠN.
+
+QUY TẮC CÚ PHÁP:
+1. Dòng đầu tiên: flowchart LR
+2. Khai báo Actor BÊN TRÁI với style riêng biệt:
+   A1["👤 Tên Actor"]
+3. Tạo 1 subgraph DUY NHẤT:
    subgraph SYS["🏥 Tên Hệ Thống"]
-4. Mỗi use case dùng ID ngắn và text trong ngoặc kép:
-   UC1(["📝 Tên chức năng"])
-5. Nối: A1 --> UC1
-6. GIỚI HẠN: Tối đa 7-8 use case chính, 2-4 actor. KHÔNG liệt kê quá nhiều — chọn chức năng CỐT LÕI.
-7. KHÔNG dùng subgraph lồng nhau.
-8. Cuối cùng đóng subgraph: end
-9. Nếu có quan hệ include/extend, dùng mũi tên nét đứt:
+4. Use case hình oval:
+   UC1(["📝 Chức năng"])
+5. THỨ TỰ use case trong subgraph PHẢI theo nhóm actor:
+   - Các UC của Actor 1 khai báo TRƯỚC
+   - Các UC của Actor 2 khai báo SAU
+   - UC dùng chung đặt ở GIỮA
+6. Khai báo kết nối ĐÚNG THỨ TỰ:
+   - Tất cả kết nối của Actor 1 trước
+   - Sau đó Actor 2, rồi Actor 3
+7. KHÔNG subgraph lồng nhau
+8. Quan hệ include/extend (nếu có, tối đa 1-2):
    UC1 -.->|"<<include>>"| UC5
-   UC2 -.->|"<<extend>>"| UC6
-10. Mỗi Actor nên liên kết với 2-4 use case, KHÔNG nối quá nhiều đường.
 
-VÍ DỤ ĐÚNG:
+⛔ SAI (quá rối):
 flowchart LR
-  A1["👤 Khách hàng"]
-  A2["👨‍💼 Nhân viên"]
-  subgraph SYS["🛒 Hệ thống bán hàng"]
-    UC1(["📝 Đăng nhập"])
-    UC2(["🛍️ Đặt hàng"])
-    UC3(["📦 Quản lý kho"])
-    UC4(["💳 Thanh toán"])
+  A1["Khách hàng"]
+  subgraph SYS["Hệ thống"]
+    UC1(["Đăng nhập"])
+    UC2(["Đặt vé"])
+    UC3(["Chọn ghế"])
+    UC4(["Thanh toán"])
+    UC5(["Xem lịch"])
+    UC6(["Nhận vé"])
+    UC7(["Đặt combo"])
+    UC8(["Quản lý"])
   end
   A1 --> UC1
   A1 --> UC2
+  A1 --> UC3
   A1 --> UC4
+  A1 --> UC5
+  A1 --> UC6
+  A1 --> UC7
+%% SAI vì 1 actor nối 7 use case = RẤT RỐI
+
+✅ ĐÚNG (gọn, đẹp):
+flowchart LR
+  A1["👤 Khách hàng"]
+  A2["👨‍💼 Nhân viên"]
+  subgraph SYS["🎬 Hệ thống đặt vé xem phim"]
+    UC1(["🔐 Đăng nhập"])
+    UC2(["🎟️ Đặt vé"])
+    UC3(["💳 Thanh toán"])
+    UC4(["📋 Quản lý suất chiếu"])
+    UC5(["📊 Thống kê doanh thu"])
+  end
+  A1 --> UC1
+  A1 --> UC2
+  UC2 -.->|"<<include>>"| UC3
   A2 --> UC1
-  A2 --> UC3
-  UC2 -.->|"<<include>>"| UC4`,
+  A2 --> UC4
+  A2 --> UC5`,
 
   activity: `Tạo Activity Diagram bằng Mermaid flowchart TD cho LUỒNG XỬ LÝ CHÍNH của hệ thống.
 
@@ -508,7 +538,7 @@ classDiagram
 };
 
 // ---- Clean Mermaid Code ----
-function cleanMermaidCode(raw: string): string {
+function cleanMermaidCode(raw: string, diagramType?: string): string {
   let code = raw.trim();
   
   // Remove markdown code fences
@@ -544,6 +574,31 @@ function cleanMermaidCode(raw: string): string {
         break;
       }
     }
+  }
+  
+  // ---- Post-process Use Case: force LR and limit connections ----
+  if (diagramType === 'usecase') {
+    // Force flowchart LR instead of flowchart TD/TB
+    code = code.replace(/^flowchart\s+(TD|TB)/i, 'flowchart LR');
+    
+    // Limit each actor to max 3 connections
+    const lines = code.split('\n');
+    const actorConnectionCount: Record<string, number> = {};
+    const filteredLines: string[] = [];
+    
+    for (const line of lines) {
+      // Match actor --> UC connections (e.g. A1 --> UC3)
+      const connMatch = line.trim().match(/^(A\d+)\s*-->/); 
+      if (connMatch) {
+        const actor = connMatch[1];
+        actorConnectionCount[actor] = (actorConnectionCount[actor] || 0) + 1;
+        if (actorConnectionCount[actor] > 3) {
+          continue; // Skip excess connections
+        }
+      }
+      filteredLines.push(line);
+    }
+    code = filteredLines.join('\n');
   }
   
   return code;
@@ -632,7 +687,7 @@ export async function generateDiagram(
   }
 
   const content = await callAI(SYSTEM_PROMPT, `${diagramPrompt}\n\nĐề tài: ${requirement}`);
-  return cleanMermaidCode(content);
+  return cleanMermaidCode(content, diagramType);
 }
 
 // ---- Generate Analysis Text via AI ----
