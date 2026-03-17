@@ -8,6 +8,7 @@ import { checkProviderStatus, generateAllDiagrams, generateAnalysis, getApiKey, 
 import type { ProviderType } from './ai-generator';
 import { templates, getTemplate } from './templates';
 import { exportSvg, exportPng, copyToClipboard } from './export';
+import { convertToDrawio } from './drawio-export';
 import { marked } from 'marked';
 import type { DiagramSet } from './templates';
 
@@ -657,67 +658,28 @@ function hideCodeError() {
 }
 
 // ---- Export to Draw.io ----
-async function handleExportDrawio() {
+function handleExportDrawio() {
   if (!currentMermaidCode) {
     showToast('⚠️ Chưa có diagram để export', 'error');
     return;
   }
 
-  // Get the rendered SVG from the diagram container
-  const svgElement = diagramContainer.querySelector('svg');
-  if (!svgElement) {
-    showToast('⚠️ Chưa có diagram để export', 'error');
-    return;
-  }
-
-  // Serialize the SVG
-  const svgString = new XMLSerializer().serializeToString(svgElement);
-  const encodedSvg = btoa(unescape(encodeURIComponent(svgString)));
-  const svgDataUri = `data:image/svg+xml;base64,${encodedSvg}`;
-
-  // Get diagram dimensions
-  const bbox = svgElement.getBBox ? svgElement.getBBox() : { width: 800, height: 600 };
-  const width = Math.max(bbox.width || 800, 400);
-  const height = Math.max(bbox.height || 600, 300);
-
-  // Build draw.io XML with embedded SVG + Mermaid code as label
-  const mermaidEscaped = currentMermaidCode
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-
-  const drawioXml = `<?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="app.diagrams.net" type="device">
-  <diagram name="UML Diagram" id="uml-diagram-1">
-    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-        <mxCell id="2" value="" style="shape=image;verticalLabelPosition=bottom;labelBackgroundColor=default;verticalAlign=top;aspect=fixed;imageAspect=0;image=${svgDataUri};" vertex="1" parent="1">
-          <mxGeometry x="40" y="40" width="${width}" height="${height}" as="geometry" />
-        </mxCell>
-        <mxCell id="3" value="Mermaid Code:&#xa;${mermaidEscaped}" style="text;html=0;align=left;verticalAlign=top;whiteSpace=wrap;overflow=auto;fontSize=10;fontFamily=Courier New;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;rounded=1;arcSize=6;" vertex="1" parent="1">
-          <mxGeometry x="40" y="${height + 80}" width="${Math.max(width, 400)}" height="200" as="geometry" />
-        </mxCell>
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+  // Convert Mermaid code to native draw.io XML shapes
+  const svgElement = diagramContainer.querySelector('svg') as SVGSVGElement | null;
+  const drawioXml = convertToDrawio(currentMermaidCode, currentType, svgElement);
 
   // Download as .drawio file
   const blob = new Blob([drawioXml], { type: 'application/xml' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  const typeName = currentType || 'diagram';
-  a.download = `uml_${typeName}_diagram.drawio`;
+  a.download = `uml_${currentType || 'diagram'}.drawio`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 
-  showToast('📥 Đã tải file .drawio! Mở bằng app.diagrams.net để chỉnh sửa', 'success');
+  showToast('📥 Đã tải file .drawio! Mở file bằng app.diagrams.net', 'success');
 }
 
 // ---- Export Handlers ----
