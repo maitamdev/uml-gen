@@ -327,6 +327,14 @@ async function handleGenerate() {
     return;
   }
 
+  // Validate meaningful input
+  const wordCount = requirement.split(/\s+/).filter(w => w.length > 1).length;
+  if (requirement.length < 15 || wordCount < 3) {
+    showToast('⚠️ Mô tả quá ngắn! Hãy nhập ít nhất 3 từ mô tả hệ thống (VD: "Hệ thống quản lý thư viện")', 'error');
+    requirementInput.focus();
+    return;
+  }
+
   // Check template match first
   const matchedTemplate = findMatchingTemplate(requirement);
   if (matchedTemplate) {
