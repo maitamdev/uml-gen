@@ -28,7 +28,7 @@ const templateMenu = $('#templateMenu');
 const outputSection = $('#outputSection');
 const diagramContainer = $('#diagramContainer');
 const diagramTitle = $('#diagramTitle');
-const mermaidCodeEl = $('#mermaidCode');
+const mermaidCodeEl = $('#mermaidCode') as HTMLTextAreaElement;
 const aiStatus = $('#aiStatus');
 const toastContainer = $('#toastContainer');
 const analysisContent = $('#analysisContent');
@@ -239,6 +239,17 @@ function setupEventListeners() {
   $('#exportPngBtn').addEventListener('click', handleExportPng);
   $('#copyAnalysisBtn').addEventListener('click', handleCopyAnalysis);
 
+  // Editable Mermaid code - Update Diagram button
+  $('#updateDiagramBtn').addEventListener('click', handleUpdateDiagram);
+
+  // Auto-update on Ctrl+Enter inside editor
+  mermaidCodeEl.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'Enter') {
+      e.preventDefault();
+      handleUpdateDiagram();
+    }
+  });
+
   // Guide toggle
   const guideToggle = document.getElementById('guideToggle');
   const guideContent = document.getElementById('guideContent');
@@ -422,19 +433,21 @@ function switchTab(type: keyof DiagramSet) {
   const code = currentDiagrams[type];
   if (code) {
     currentMermaidCode = code;
-    mermaidCodeEl.textContent = code;
+    mermaidCodeEl.value = code;
     zoomLevel = 1;
     diagramContainer.style.transform = 'scale(1)';
     renderDiagram(code, diagramContainer);
+    hideCodeError();
   } else {
     currentMermaidCode = '';
-    mermaidCodeEl.textContent = '// Chưa có dữ liệu';
+    mermaidCodeEl.value = '// Chưa có dữ liệu';
     diagramContainer.innerHTML = `
       <div style="padding: 3rem; text-align: center; color: var(--text-muted);">
         <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
         <div>Chưa có sơ đồ cho loại này</div>
       </div>
     `;
+    hideCodeError();
   }
 
   // Update analysis
@@ -503,6 +516,11 @@ function toggleCodePanel() {
   icon.textContent = isHidden ? '▲' : '▼';
   const label = document.querySelector('.toggle-label');
   if (label) label.textContent = isHidden ? 'Ẩn code' : 'Hiện code';
+
+  // Auto-focus textarea when showing
+  if (isHidden) {
+    setTimeout(() => mermaidCodeEl.focus(), 100);
+  }
 }
 
 function toggleFullscreen() {
@@ -594,6 +612,47 @@ async function handleCopyAnalysis() {
     success ? '📋 Đã copy bài phân tích!' : '❌ Không thể copy',
     success ? 'success' : 'error'
   );
+}
+
+// ---- Update Diagram from Edited Code ----
+function handleUpdateDiagram() {
+  const newCode = mermaidCodeEl.value.trim();
+  if (!newCode) {
+    showToast('⚠️ Code trống, không thể cập nhật', 'error');
+    return;
+  }
+
+  // Save edited code to currentDiagrams so it persists across tab switches
+  currentDiagrams[currentType] = newCode;
+  currentMermaidCode = newCode;
+
+  // Try rendering
+  try {
+    zoomLevel = 1;
+    diagramContainer.style.transform = 'scale(1)';
+    renderDiagram(newCode, diagramContainer);
+    hideCodeError();
+    showToast('✅ Đã cập nhật diagram!', 'success');
+  } catch (err) {
+    showCodeError(err instanceof Error ? err.message : 'Lỗi cú pháp Mermaid');
+    showToast('❌ Lỗi cú pháp Mermaid', 'error');
+  }
+}
+
+function showCodeError(message: string) {
+  const errorEl = $('#codeError');
+  const errorText = $('#codeErrorText');
+  if (errorEl && errorText) {
+    errorText.textContent = message;
+    errorEl.style.display = 'flex';
+  }
+}
+
+function hideCodeError() {
+  const errorEl = $('#codeError');
+  if (errorEl) {
+    errorEl.style.display = 'none';
+  }
 }
 
 // ---- Export Handlers ----

@@ -1465,7 +1465,7 @@ body {
 }
 
 /* ============================================
-   CODE PANEL
+   CODE PANEL (Editable)
    ============================================ */
 
 .code-panel {
@@ -1496,6 +1496,16 @@ body {
   color: var(--text-secondary);
 }
 
+.code-editable-badge {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.5rem;
+  background: rgba(99,102,241,0.12);
+  color: var(--indigo);
+  border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
 .btn-toggle {
   display: inline-flex; align-items: center; gap: 0.3rem;
   font-size: 0.75rem;
@@ -1503,20 +1513,97 @@ body {
 
 .code-content {
   border-top: 1px solid var(--border-subtle);
-  max-height: 300px;
-  overflow: auto;
   background: rgba(5,5,15,0.4);
+  display: flex;
+  flex-direction: column;
 }
 
-.code-content pre { padding: 1rem; margin: 0; }
-
-.code-content code {
+/* Editable textarea */
+.mermaid-code-editor {
+  width: 100%;
+  min-height: 250px;
+  max-height: 450px;
+  padding: 1rem;
+  margin: 0;
+  border: none;
+  outline: none;
+  resize: vertical;
+  background: transparent;
+  color: var(--purple);
   font-family: "JetBrains Mono", "Cascadia Code", "Fira Code", monospace;
   font-size: 0.8rem;
-  color: var(--purple);
   line-height: 1.8;
-  white-space: pre-wrap;
-  word-break: break-word;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: auto;
+  tab-size: 2;
+  caret-color: var(--indigo);
+}
+
+.mermaid-code-editor::placeholder {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.mermaid-code-editor:focus {
+  background: rgba(99,102,241,0.02);
+}
+
+/* Actions bar below textarea */
+.code-editor-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  border-top: 1px solid var(--border-subtle);
+  background: rgba(99,102,241,0.02);
+  gap: 0.75rem;
+}
+
+.btn-update-diagram {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all 0.25s var(--ease);
+  flex-shrink: 0;
+}
+
+.btn-update-diagram:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(99,102,241,0.35);
+}
+
+.btn-update-diagram:active {
+  transform: scale(0.97);
+}
+
+/* Error display */
+.code-error {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--rose);
+  background: rgba(244,63,94,0.08);
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(244,63,94,0.2);
+  flex: 1;
+  min-width: 0;
+}
+
+.error-icon {
+  flex-shrink: 0;
+}
+
+.error-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ============================================
