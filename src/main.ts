@@ -335,6 +335,8 @@ async function handleGenerate() {
 
   // AI Generation
   setLoading(true);
+  // Clear stale analyses from previous generation
+  currentAnalyses = {};
   const providerName = getProviderConfig().name;
   showToast(`🤖 ${providerName} đang tạo sơ đồ và phân tích... ⚡`, 'info');
   showAnalysisLoading();

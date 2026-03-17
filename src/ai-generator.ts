@@ -357,25 +357,32 @@ QUY TẮC BỐ CỤC (RẤT QUAN TRỌNG - tuân thủ nghiêm ngặt):
 3. Tạo 1 subgraph DUY NHẤT chứa tất cả use case:
    subgraph SYS["🏥 Tên Hệ Thống"]
 4. Mỗi use case dùng ID ngắn và text trong ngoặc kép:
-   UC1["📝 Tên chức năng"]
+   UC1(["📝 Tên chức năng"])
 5. Nối: A1 --> UC1
-6. GIỚI HẠN: Tối đa 8-10 use case chính, 3-5 actor. KHÔNG liệt kê quá nhiều.
+6. GIỚI HẠN: Tối đa 7-8 use case chính, 2-4 actor. KHÔNG liệt kê quá nhiều — chọn chức năng CỐT LÕI.
 7. KHÔNG dùng subgraph lồng nhau.
 8. Cuối cùng đóng subgraph: end
+9. Nếu có quan hệ include/extend, dùng mũi tên nét đứt:
+   UC1 -.->|"<<include>>"| UC5
+   UC2 -.->|"<<extend>>"| UC6
+10. Mỗi Actor nên liên kết với 2-4 use case, KHÔNG nối quá nhiều đường.
 
 VÍ DỤ ĐÚNG:
 flowchart LR
   A1["👤 Khách hàng"]
   A2["👨‍💼 Nhân viên"]
   subgraph SYS["🛒 Hệ thống bán hàng"]
-    UC1["📝 Đăng nhập"]
-    UC2["🛍️ Đặt hàng"]
-    UC3["📦 Quản lý kho"]
+    UC1(["📝 Đăng nhập"])
+    UC2(["🛍️ Đặt hàng"])
+    UC3(["📦 Quản lý kho"])
+    UC4(["💳 Thanh toán"])
   end
   A1 --> UC1
   A1 --> UC2
+  A1 --> UC4
   A2 --> UC1
-  A2 --> UC3`,
+  A2 --> UC3
+  UC2 -.->|"<<include>>"| UC4`,
 
   activity: `Tạo Activity Diagram bằng Mermaid flowchart TD cho LUỒNG XỬ LÝ CHÍNH của hệ thống.
 
@@ -400,11 +407,14 @@ QUY TẮC:
 
 QUY TẮC CÚ PHÁP:
 1. Dùng sequenceDiagram
-2. Khai báo đúng Pattern Boundary → Control → Entity:
+2. Khai báo participant theo pattern Boundary → Control → Entity:
    actor U as 👤 Người dùng
    participant HT as 🖥️ Hệ thống
    participant DB as 🗄️ CSDL
-3. Dùng activate/deactivate TƯỜNG MINH (KHÔNG dùng ->>+ hay -->>-):
+3. ⛔ TUYỆT ĐỐI KHÔNG dùng +/- trong mũi tên:
+   SAI: ->>+ hoặc -->>-
+   ĐÚNG: ->> và -->> cùng activate/deactivate riêng dòng
+4. Dùng activate/deactivate TƯỜNG MINH:
    U->>HT: Yêu cầu
    activate HT
    HT->>DB: Truy vấn
@@ -413,22 +423,11 @@ QUY TẮC CÚ PHÁP:
    deactivate DB
    HT-->>U: Phản hồi
    deactivate HT
-4. ⛔ TUYỆT ĐỐI KHÔNG dùng +/- trong mũi tên (VD: ->>+ hay -->>-)
-5. BÊN TRONG alt/else: CHỈ dùng mũi tên thường ->> và -->>. KHÔNG activate/deactivate bên trong alt/else.
-6. activate/deactivate đặt TRƯỚC và SAU block alt/else:
-   activate HT
-   alt Điều kiện đúng
-     HT->>DB: Cập nhật
-     activate DB
-     DB-->>HT: OK
-     deactivate DB
-     HT-->>U: Thành công
-   else Điều kiện sai
-     HT-->>U: Thất bại
-   end
-   deactivate HT
-7. GIỚI HẠN: Tối đa 3-4 participant, 8-12 message, 1 block alt/else.
-8. Chọn 1 kịch bản cụ thể quan trọng nhất.
+5. BÊN TRONG alt/else/opt: CÓ THỂ dùng activate/deactivate bình thường, miễn là đảm bảo mỗi activate đều có deactivate tương ứng BÊN TRONG cùng nhánh.
+6. GIỚI HẠN: Tối đa 3-4 participant, 10-14 message, 1 block alt/else.
+7. Chọn 1 kịch bản cụ thể quan trọng nhất (ví dụ: đăng ký, đặt lịch, thanh toán...).
+8. Dùng Note để bổ sung giải thích khi cần:
+   Note over HT: Xử lý nghiệp vụ
 
 VÍ DỤ ĐÚNG:
 sequenceDiagram
@@ -437,39 +436,74 @@ sequenceDiagram
   participant DB as 🗄️ CSDL
   U->>HT: Đặt lịch tập
   activate HT
-  HT->>DB: Kiểm tra lịch HLV
+  HT->>DB: Kiểm tra lịch trống
   activate DB
-  DB-->>HT: Trả lịch
+  DB-->>HT: Trả danh sách lịch
   deactivate DB
-  alt HLV có lịch trống
-    HT->>DB: Cập nhật lịch HLV
+  alt Có lịch trống
+    HT->>DB: Lưu lịch hẹn
     activate DB
-    DB-->>HT: Xác nhận
+    DB-->>HT: Xác nhận lưu
     deactivate DB
     HT-->>U: Đặt lịch thành công
-  else HLV không có lịch trống
-    HT-->>U: Đặt lịch thất bại
+  else Không có lịch trống
+    HT-->>U: Thông báo hết lịch
   end
   deactivate HT`,
 
   class: `Tạo Class Diagram bằng Mermaid classDiagram.
 
-QUY TẮC:
+QUY TẮC TUYỆT ĐỐI:
 1. Dùng classDiagram
-2. Mỗi class có 2-4 thuộc tính chính và 1-3 phương thức chính:
+2. Mỗi class có 2-4 thuộc tính chính và 2-3 phương thức chính:
    class TenLop {
      -int id
      -String ten
+     -String email
      +getTen() String
      +capNhat() void
+     +xoa() void
    }
-3. Quan hệ:
-   LopCha <|-- LopCon : kế thừa
+3. ⛔ TUYỆT ĐỐI KHÔNG đặt từ "extends" hay "implements" trong tên class.
+   SAI: class BenhNhanConextendsBenhNhan ← TUYỆT ĐỐI KHÔNG LÀM THẾ NÀY
+   SAI: class NhanVienextendsTaiKhoan ← TUYỆT ĐỐI KHÔNG
+   ĐÚNG: Dùng ký hiệu quan hệ Mermaid bên ngoài class
+4. Quan hệ KẾ THỪA dùng mũi tên BÊN NGOÀI class, KHÔNG gộp vào tên:
+   NguoiDung <|-- BenhNhan : kế thừa
+   NguoiDung <|-- BacSi : kế thừa
+   NguoiDung <|-- NhanVien : kế thừa
+5. Các loại quan hệ khác:
    LopA "1" --> "*" LopB : chứa
    LopA o-- LopB : tập hợp
-4. GIỚI HẠN: Tối đa 6-8 class chính.
-5. Đặt tên class bằng tiếng Việt KHÔNG DẤU hoặc tiếng Anh ngắn gọn (ví dụ: BenhNhan, BacSi, HoaDon).
-6. KHÔNG dùng ký tự đặc biệt hay khoảng trắng trong tên class.`,
+   LopA *-- LopB : hợp thành
+6. GIỚI HẠN: Tối đa 5-7 class chính. Chọn các class CỐT LÕI.
+7. Đặt tên class bằng tiếng Việt KHÔNG DẤU: BenhNhan, BacSi, HoaDon, DonThuoc, LichKham.
+8. KHÔNG dùng ký tự đặc biệt, khoảng trắng, hay từ khóa OOP trong tên class.
+
+VÍ DỤ ĐÚNG:
+classDiagram
+  class NguoiDung {
+    -int id
+    -String ten
+    -String email
+    +dangNhap() boolean
+    +dangXuat() void
+  }
+  class BenhNhan {
+    -String diaChi
+    -Date ngaySinh
+    +datLich() void
+    +xemLich() List
+  }
+  class BacSi {
+    -String chuyenKhoa
+    +keDon() void
+    +xemLich() List
+  }
+  NguoiDung <|-- BenhNhan
+  NguoiDung <|-- BacSi
+  BenhNhan "1" --> "*" LichKham : đặt
+  BacSi "1" --> "*" LichKham : khám`,
 
 };
 
