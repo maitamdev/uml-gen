@@ -1400,10 +1400,9 @@ body {
   overflow: auto;
   padding: 2rem;
   display: flex; align-items: flex-start; justify-content: center;
-  background:
-    radial-gradient(ellipse at 30% 20%, rgba(99,102,241,0.04), transparent 50%),
-    radial-gradient(ellipse at 70% 80%, rgba(139,92,246,0.03), transparent 50%),
-    linear-gradient(var(--bg-base), var(--bg-surface));
+  background: #f0f2f5;
+  border-radius: 12px;
+  margin: 4px;
 }
 
 .diagram-container {
@@ -1411,6 +1410,10 @@ body {
   transform-origin: center center;
   width: 100%;
   display: flex; justify-content: center;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
 .diagram-container svg { height: auto; }
