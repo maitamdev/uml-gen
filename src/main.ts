@@ -237,6 +237,7 @@ function setupEventListeners() {
   $('#copyCodeBtn').addEventListener('click', handleCopyCode);
   $('#exportSvgBtn').addEventListener('click', handleExportSvg);
   $('#exportPngBtn').addEventListener('click', handleExportPng);
+  $('#exportDrawioBtn').addEventListener('click', handleExportDrawio);
   $('#copyAnalysisBtn').addEventListener('click', handleCopyAnalysis);
 
   // Editable Mermaid code - Update Diagram button
@@ -652,6 +653,26 @@ function hideCodeError() {
   const errorEl = $('#codeError');
   if (errorEl) {
     errorEl.style.display = 'none';
+  }
+}
+
+// ---- Export to Draw.io ----
+async function handleExportDrawio() {
+  if (!currentMermaidCode) {
+    showToast('⚠️ Chưa có diagram để export', 'error');
+    return;
+  }
+
+  // Copy Mermaid code to clipboard
+  const copied = await copyToClipboard(currentMermaidCode);
+  
+  // Open draw.io in new tab
+  window.open('https://app.diagrams.net/', '_blank');
+  
+  if (copied) {
+    showToast('📋 Đã copy Mermaid code! Trong draw.io: bấm + > Advanced > Mermaid rồi paste', 'success');
+  } else {
+    showToast('🔗 Đã mở draw.io! Copy code từ editor và paste qua', 'info');
   }
 }
 
