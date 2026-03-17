@@ -615,7 +615,7 @@ async function handleCopyAnalysis() {
 }
 
 // ---- Update Diagram from Edited Code ----
-function handleUpdateDiagram() {
+async function handleUpdateDiagram() {
   const newCode = mermaidCodeEl.value.trim();
   if (!newCode) {
     showToast('⚠️ Code trống, không thể cập nhật', 'error');
@@ -627,14 +627,14 @@ function handleUpdateDiagram() {
   currentMermaidCode = newCode;
 
   // Try rendering
-  try {
-    zoomLevel = 1;
-    diagramContainer.style.transform = 'scale(1)';
-    renderDiagram(newCode, diagramContainer);
+  zoomLevel = 1;
+  diagramContainer.style.transform = 'scale(1)';
+  const success = await renderDiagram(newCode, diagramContainer);
+  if (success) {
     hideCodeError();
     showToast('✅ Đã cập nhật diagram!', 'success');
-  } catch (err) {
-    showCodeError(err instanceof Error ? err.message : 'Lỗi cú pháp Mermaid');
+  } else {
+    showCodeError('Mermaid code có lỗi cú pháp. Kiểm tra lại code.');
     showToast('❌ Lỗi cú pháp Mermaid', 'error');
   }
 }

@@ -80,10 +80,11 @@ export async function renderDiagram(
   code: string,
   container: HTMLElement
 ): Promise<boolean> {
+  renderCounter++;
+  const id = `mermaid-diagram-${renderCounter}`;
+  
   try {
     container.innerHTML = '';
-    renderCounter++;
-    const id = `mermaid-diagram-${renderCounter}`;
     
     const { svg } = await mermaid.render(id, code);
     container.innerHTML = svg;
@@ -99,6 +100,18 @@ export async function renderDiagram(
     return true;
   } catch (error) {
     console.error('Mermaid render error:', error);
+    
+    // Clean up any error elements Mermaid may have injected into body
+    document.querySelectorAll('body > div').forEach(el => {
+      if (el.id === 'app') return;
+      if (el.textContent?.includes('Syntax error') || el.querySelector('svg[aria-roledescription="error"]')) {
+        el.remove();
+      }
+    });
+    // Remove any stale mermaid error SVGs from body  
+    document.querySelectorAll('body > svg[aria-roledescription="error"]').forEach(el => el.remove());
+    document.querySelectorAll(`body > #d${id}`).forEach(el => el.remove());
+    
     container.innerHTML = `
       <div style="
         padding: 2rem;
@@ -111,12 +124,12 @@ export async function renderDiagram(
         margin: auto;
       ">
         <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚠️</div>
-        <div style="font-weight: 600; margin-bottom: 0.5rem;">Lỗi render sơ đồ</div>
+        <div style="font-weight: 600; margin-bottom: 0.5rem;">Lỗi cú pháp Mermaid</div>
         <div style="font-size: 0.85rem; color: #a0a0c0;">
-          ${error instanceof Error ? error.message : 'Unknown error'}
+          ${error instanceof Error ? error.message.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'Unknown error'}
         </div>
         <div style="margin-top: 1rem; font-size: 0.8rem; color: #6a6a8a;">
-          Thử lại hoặc kiểm tra cú pháp Mermaid code
+          Kiểm tra lại cú pháp Mermaid code bên dưới
         </div>
       </div>
     `;
