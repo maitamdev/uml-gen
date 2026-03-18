@@ -1,12 +1,21 @@
-{
+﻿{
   "name": "uml-generator",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.2.0",
+  "description": "AI-powered UML Diagram Generator - Create UML diagrams from Vietnamese descriptions",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "tsc --noEmit"
+  },
+  "keywords": ["uml", "diagram", "mermaid", "ai", "generator", "vietnamese"],
+  "author": "MaiTamDev",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maitamdev/uml-gen.git"
   },
   "devDependencies": {
     "typescript": "~5.9.3",
