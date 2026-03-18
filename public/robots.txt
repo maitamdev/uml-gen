@@ -1,0 +1,3 @@
+﻿User-agent: *
+Allow: /
+Sitemap: https://uml-gen.vercel.app/sitemap.xml
