@@ -4,3 +4,5 @@ export * from './storage-utils';
 export * from './timing-utils';
 export * from './color-utils';
 export * from './array-utils';
+export * from './date-utils';
+export * from './number-utils';
